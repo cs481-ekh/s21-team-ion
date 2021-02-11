@@ -9,12 +9,6 @@ import os
 import matplotlib as mpl
 from xvfbwrapper import Xvfb
 
-if os.environ.get('DISPLAY', '') == '':
-    #print('no display found. Using non-interactive Agg backend')
-    # mpl.use('Agg')
-    vdisplay = Xvfb()
-    vdisplay.start()
-
 
 class PlotGUI:
     def __init__(self):
@@ -39,6 +33,12 @@ class PlotGUI:
         #
         # fig.savefig("test.png")
         # plt.show()
+        if os.environ.get('DISPLAY', '') == '':
+            #print('no display found. Using non-interactive Agg backend')
+            # mpl.use('Agg')
+            vdisplay = Xvfb()
+            vdisplay.start()
+
         root = tkinter.Tk()
         root.wm_title("Embedding in Tk")
 
@@ -69,4 +69,5 @@ class PlotGUI:
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
         tkinter.mainloop()
-        vdisplay.stop()
+        if os.environ.get('DISPLAY', '') == '':
+            vdisplay.stop()
