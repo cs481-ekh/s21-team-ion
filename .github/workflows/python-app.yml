@@ -25,6 +25,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy matplotlib scipy
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Test with pytest
+    - name: Run
       run: |
-        main.py
+        python main.py
