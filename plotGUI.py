@@ -7,9 +7,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import matplotlib as mpl
-if os.environ.get('DISPLAY','') == '':
-   print('no display found. Using non-interactive Agg backend')
-   mpl.use('Agg')
+from xvfbwrapper import Xvfb
+
+if os.environ.get('DISPLAY', '') == '':
+    #print('no display found. Using non-interactive Agg backend')
+    # mpl.use('Agg')
+    vdisplay = Xvfb()
+    vdisplay.start()
+
 
 class PlotGUI:
     def __init__(self):
@@ -39,7 +44,7 @@ class PlotGUI:
 
         fig = Figure(figsize=(5, 4), dpi=100)
         x = stored_data.voltages
-        y= stored_data.currents
+        y = stored_data.currents
         fig.add_subplot(111).plot(x, )
 
         canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
@@ -64,4 +69,4 @@ class PlotGUI:
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
         tkinter.mainloop()
-
+        vdisplay.stop()
