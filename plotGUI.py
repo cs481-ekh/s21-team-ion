@@ -70,4 +70,5 @@ class PlotGUI:
 
         tkinter.mainloop()
         if os.environ.get('DISPLAY', '') == '':
+            root.destroy()
             vdisplay.stop()
