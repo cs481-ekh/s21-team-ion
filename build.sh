@@ -1,3 +1,3 @@
 #!/bin/bash
-python main.py
+echo "Building Program"
 exit 0
