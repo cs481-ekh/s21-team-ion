@@ -1,3 +1,2 @@
 #!/bin/bash
-echo "Building Program"
-exit 0
+pylint main.py
