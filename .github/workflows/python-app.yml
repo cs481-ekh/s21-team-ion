@@ -27,6 +27,5 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run
       run: |
-        chmod +x ./test.sh
         ./test.sh
         ./build.sh
