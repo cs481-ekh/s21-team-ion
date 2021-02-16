@@ -1,2 +1,3 @@
 #!/bin/bash
-exit 127
+python main.py
+exit 0
