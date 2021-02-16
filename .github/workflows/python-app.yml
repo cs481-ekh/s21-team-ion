@@ -25,7 +25,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy matplotlib scipy xvfbwrapper
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Run
+    - name: Run Tests
       run: |
         ./test.sh
+    - name: Build Program
+      run: |
         ./build.sh
