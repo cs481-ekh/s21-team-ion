@@ -1,2 +1,2 @@
 #!/bin/bash
-pylint main.py
+py -m pylint main.py
