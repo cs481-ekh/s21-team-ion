@@ -1,9 +1,11 @@
+"""test docstring please ignore"""
 import csv
 import storedData
 from plotGUI import PlotGUI
 
 
 def read_csv(file):
+    """test function docstring please ignore"""
     raw_data = csv.reader(file)
     voltage_list = []
     current_list = []

@@ -23,10 +23,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install numpy matplotlib scipy xvfbwrapper
+        pip install numpy matplotlib scipy xvfbwrapper pylint-exit
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Run
+    - name: Build Program
       run: |
-        chmod +x ./test.sh
-        ./test.sh
         ./build.sh
+    - name: Run Tests
+      run: |
+        ./test.sh
