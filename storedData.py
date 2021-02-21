@@ -25,8 +25,8 @@ class StoredData:
             delta_list.append(delta)
         average_current_delta = np.average(delta_list)
         self.vertical_regression_line_points = np.arange(start=current_min,
-                                                    stop=current_max,
-                                                    step=average_current_delta)
+                                                         stop=current_max,
+                                                         step=average_current_delta)
 
         self.compute_linear_regression()
 
