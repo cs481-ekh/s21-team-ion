@@ -33,11 +33,11 @@ class PlotGUI:
         #
         # fig.savefig("test.png")
         # plt.show()
-        if os.environ.get('DISPLAY', '') == '':
-            print('no display found. Using non-interactive Agg backend')
-            mpl.use('Agg')
-            #vdisplay = Xvfb()
-            # vdisplay.start()
+        # if os.environ.get('DISPLAY', '') == '':
+        #print('no display found. Using non-interactive Agg backend')
+        # mpl.use('Agg')
+        #vdisplay = Xvfb()
+        # vdisplay.start()
 
         root = tkinter.Tk()
         root.wm_title("Embedding in Tk")
