@@ -21,6 +21,24 @@ class PlotGUI:
                                           filetypes=(("CSV files", "*.csv"), ("All files", "*.*")))
         # label_file_explorer.configure(text="File opened: "+filename)
 
+    #function to save currently plotted graph to a new csv file
+    #def save(self):
+        #plt.savefig('new_graph.png') #placeholder: user should be able to name their own file (input)
+        #pop = Tk()
+
+        #fig, ax = plt.subplots()
+        #ax.plot(np.arange(1,10,5), np.arange(1,10,5))
+
+        #plot_canvas = FigureCanvasTkAgg(fig, master=pop)
+        #plot_canvas.draw()
+
+        #toolbar = NavigationToolbar2Tk(plot_canvas, pop)
+        #toolbar.update()
+        #plot_canvas.get_tk_widget().pack(side=TOP, fill=Y)
+
+
+
+
     # @ staticmethod
     def plot_data(self, stored_data):
         # fig, ax = plt.subplots()
@@ -67,6 +85,7 @@ class PlotGUI:
 
         button = tkinter.Button(master=root, text="Quit", command=root.quit)
         button2 = tkinter.Button(master=root, text="Browse", command=lambda: self.browseFiles())
+        save_button = tkinter.Button(master=root, text= "Save", command=lambda: self.save())
 
         # Packing order is important. Widgets are processed sequentially and if there
         # is no space left, because the window is too small, they are not displayed.
