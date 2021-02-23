@@ -7,15 +7,22 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import matplotlib as mpl
-#from xvfbwrapper import Xvfb
+from tkinter import filedialog
+# from xvfbwrapper import Xvfb
 
 
 class PlotGUI:
     def __init__(self):
         pass
 
-    @staticmethod
-    def plot_data(stored_data):
+    # Function for opening the file explorer window
+    def browseFiles(self):
+        return filedialog.askopenfilename(initialdir="~", title="Select a File",
+                                          filetypes=(("CSV files", "*.csv"), ("All files", "*.*")))
+        # label_file_explorer.configure(text="File opened: "+filename)
+
+    # @ staticmethod
+    def plot_data(self, stored_data):
         # fig, ax = plt.subplots()
         # ax.plot(stored_data.voltages, stored_data.currents, '-', lw=1, label='raw data')
         # regression_xmin = np.full((len(stored_data.vertical_regression_line_points)), stored_data.regression_min)
@@ -34,9 +41,9 @@ class PlotGUI:
         # fig.savefig("test.png")
         # plt.show()
         # if os.environ.get('DISPLAY', '') == '':
-        #print('no display found. Using non-interactive Agg backend')
+        # print('no display found. Using non-interactive Agg backend')
         # mpl.use('Agg')
-        #vdisplay = Xvfb()
+        # vdisplay = Xvfb()
         # vdisplay.start()
 
         root = tkinter.Tk()
@@ -59,6 +66,7 @@ class PlotGUI:
         canvas.mpl_connect("key_press_event", key_press_handler)
 
         button = tkinter.Button(master=root, text="Quit", command=root.quit)
+        button2 = tkinter.Button(master=root, text="Browse", command=lambda: self.browseFiles())
 
         # Packing order is important. Widgets are processed sequentially and if there
         # is no space left, because the window is too small, they are not displayed.
@@ -66,6 +74,7 @@ class PlotGUI:
         # sure the UI controls are displayed as long as possible.
         button.pack(side=tkinter.BOTTOM)
         toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
+        button2.pack(side=tkinter.TOP)
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
         tkinter.mainloop()

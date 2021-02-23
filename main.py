@@ -1,7 +1,7 @@
 """test docstring please ignore"""
 import csv
 import storedData
-from plotGUI import PlotGUI
+import plotGUI
 
 
 def read_csv(file):
@@ -21,5 +21,6 @@ if __name__ == "__main__":
     dataStore = storedData.StoredData(v_raw, c_raw)
     # dataStore.set_regression_bounds()
 
-    PlotGUI.plot_data(dataStore)
+    gui = plotGUI.PlotGUI()
+    gui.plot_data(dataStore)
     data_file.close()
