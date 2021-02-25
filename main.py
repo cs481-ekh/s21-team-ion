@@ -21,6 +21,6 @@ if __name__ == "__main__":
     dataStore = storedData.StoredData(v_raw, c_raw)
     # dataStore.set_regression_bounds()
 
-    gui = plotGUI.PlotGUI()
-    gui.plot_data(dataStore)
+    gui = plotGUI.PlotGUI(dataStore)
+    gui.plot_data()
     data_file.close()
