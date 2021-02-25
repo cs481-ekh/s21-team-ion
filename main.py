@@ -28,15 +28,16 @@ if __name__ == "__main__":
     file_menu.add_command(label="Import", command=do_nothing)
     menu_bar.add_cascade(label="File", menu=file_menu)
 
-    # data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
-    # v_raw, c_raw = read_csv(None)
-    v_raw, c_raw = None, None
-    # dataStore = storedData.StoredData(None, None)
+    data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
+    v_raw, c_raw = read_csv(data_file)
+
+    dataStore = storedData.StoredData(v_raw, c_raw)
     # dataStore.set_regression_bounds()
 
-    # gui = plotGUI.PlotGUI(dataStore)
-    # gui.plot_data()
-    # data_file.close()
+    gui = plotGUI.PlotGUI(dataStore)
+    gui.plot_data(root)
 
     root.config(menu=menu_bar)
     tkinter.mainloop()
+
+    data_file.close()
