@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import matplotlib as mpl
-from tkinter import filedialog
 
 
 # from xvfbwrapper import Xvfb
@@ -19,55 +18,8 @@ class PlotGUI:
     def __init__(self, data):
         self.stored_data = data
 
-    # Function for opening the file explorer window
-    def browseFiles(self):
-        return filedialog.askopenfilename(initialdir="~", title="Select a File",
-                                          filetypes=(("CSV files", "*.csv"), ("All files", "*.*")))
-        # label_file_explorer.configure(text="File opened: "+filename)
-
-    # function to save currently plotted graph to a new csv file
-    def save(self):
-        pass
-        # plt.savefig('new_graph.png') #placeholder: user should be able to name their own file (input)
-        # pop = Tk()
-
-        # fig, ax = plt.subplots()
-        # ax.plot(np.arange(1,10,5), np.arange(1,10,5))
-
-        # plot_canvas = FigureCanvasTkAgg(fig, master=pop)
-        # plot_canvas.draw()
-
-        # toolbar = NavigationToolbar2Tk(plot_canvas, pop)
-        # toolbar.update()
-        # plot_canvas.get_tk_widget().pack(side=TOP, fill=Y)
-
     # @ staticmethod
-    def plot_data(self, root):
-        # fig, ax = plt.subplots()
-        # ax.plot(stored_data.voltages, stored_data.currents, '-', lw=1, label='raw data')
-        # regression_xmin = np.full((len(stored_data.vertical_regression_line_points)), stored_data.regression_min)
-        # regression_xmax = np.full((len(stored_data.vertical_regression_line_points)), stored_data.regression_max)
-        # ax.plot(regression_xmin, stored_data.vertical_regression_line_points)
-        # ax.plot(regression_xmax, stored_data.vertical_regression_line_points)
-        #
-        # linregression = stored_data.compute_linear_regression()
-        # ax.plot(stored_data.voltages, linregression.intercept + linregression.slope*stored_data.voltages, label='I_max')
-        # ax.legend(loc='upper right')
-        #
-        # ax.set(xlabel='voltage (mV)', ylabel='current (nA)',
-        #        title='I-V plot')
-        # ax.grid()
-        #
-        # fig.savefig("test.png")
-        # plt.show()
-        # if os.environ.get('DISPLAY', '') == '':
-        # print('no display found. Using non-interactive Agg backend')
-        # mpl.use('Agg')
-        # vdisplay = Xvfb()
-        # vdisplay.start()
-
-        # create figure inside tkinter window and create axes that all plots can use
-        fig = Figure(figsize=(5, 4), dpi=100)
+    def plot_data(self, fig, canvas):
         ax = fig.add_subplot(111)
 
         # get the raw data in a form that is easy to plot
@@ -85,29 +37,11 @@ class PlotGUI:
         ax.plot(regression_bounds["upper"], regression_bounds["y"])
         ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
 
-        canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
         canvas.draw()
-
-        # pack_toolbar=False will make it easier to use a layout manager later on.
-        toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
-        toolbar.update()
 
         canvas.mpl_connect(
             "key_press_event", lambda event: print(f"you pressed {event.key}"))
         canvas.mpl_connect("key_press_event", key_press_handler)
-
-        button = tkinter.Button(master=root, text="Quit", command=root.quit)
-        button2 = tkinter.Button(master=root, text="Browse", command=lambda: self.browseFiles())
-        save_button = tkinter.Button(master=root, text="Save", command=lambda: self.save())
-
-        # Packing order is important. Widgets are processed sequentially and if there
-        # is no space left, because the window is too small, they are not displayed.
-        # The canvas is rather flexible in its size, so we pack it last which makes
-        # sure the UI controls are displayed as long as possible.
-        button.pack(side=tkinter.BOTTOM)
-        toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
-        button2.pack(side=tkinter.TOP)
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
     def __raw_data_plot(self):
         """Helper method that returns the raw x/y data stored as a dictionary.  Makes plotting the data in plot_data()
