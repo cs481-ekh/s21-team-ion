@@ -42,7 +42,7 @@ class PlotGUI:
         # plot_canvas.get_tk_widget().pack(side=TOP, fill=Y)
 
     # @ staticmethod
-    def plot_data(self):
+    def plot_data(self, root):
         # fig, ax = plt.subplots()
         # ax.plot(stored_data.voltages, stored_data.currents, '-', lw=1, label='raw data')
         # regression_xmin = np.full((len(stored_data.vertical_regression_line_points)), stored_data.regression_min)
@@ -65,9 +65,6 @@ class PlotGUI:
         # mpl.use('Agg')
         # vdisplay = Xvfb()
         # vdisplay.start()
-
-        root = tkinter.Tk()
-        root.wm_title("Embedding in Tk")
 
         # create figure inside tkinter window and create axes that all plots can use
         fig = Figure(figsize=(5, 4), dpi=100)
@@ -111,8 +108,6 @@ class PlotGUI:
         toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
         button2.pack(side=tkinter.TOP)
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
-
-        tkinter.mainloop()
 
     def __raw_data_plot(self):
         """Helper method that returns the raw x/y data stored as a dictionary.  Makes plotting the data in plot_data()

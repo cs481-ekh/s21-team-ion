@@ -1,5 +1,6 @@
 """test docstring please ignore"""
 import csv
+import tkinter
 import storedData
 import plotGUI
 
@@ -15,12 +16,27 @@ def read_csv(file):
     return [voltage_list, current_list]
 
 
+def do_nothing():
+    x = 0
+
+
 if __name__ == "__main__":
-    data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
-    v_raw, c_raw = read_csv(data_file)
-    dataStore = storedData.StoredData(v_raw, c_raw)
+    root = tkinter.Tk()
+    root.wm_title("Embedding in Tk")
+    menu_bar = tkinter.Menu(root)
+    file_menu = tkinter.Menu(menu_bar, tearoff=0)
+    file_menu.add_command(label="Import", command=do_nothing)
+    menu_bar.add_cascade(label="File", menu=file_menu)
+
+    # data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
+    # v_raw, c_raw = read_csv(None)
+    v_raw, c_raw = None, None
+    # dataStore = storedData.StoredData(None, None)
     # dataStore.set_regression_bounds()
 
-    gui = plotGUI.PlotGUI(dataStore)
-    gui.plot_data()
-    data_file.close()
+    # gui = plotGUI.PlotGUI(dataStore)
+    # gui.plot_data()
+    # data_file.close()
+
+    root.config(menu=menu_bar)
+    tkinter.mainloop()
