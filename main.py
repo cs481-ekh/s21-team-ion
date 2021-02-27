@@ -18,10 +18,13 @@ class GUIHandler:
         file_menu.add_command(label="Import", command=self.browseFiles)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
-        v_raw, c_raw = self.read_csv(data_file)
+        data_file = None  # open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
+        if data_file != None:
+            v_raw, c_raw = self.read_csv(data_file)
 
-        data_store = storedData.StoredData(v_raw, c_raw)
+            data_store = storedData.StoredData(v_raw, c_raw)
+        else:
+            data_store = None
         # dataStore.set_regression_bounds()
 
         # create figure inside tkinter window and create axes that all plots can use
@@ -68,6 +71,8 @@ class GUIHandler:
 
     def read_csv(self, file):
         """test function docstring please ignore"""
+        if file == None:
+            return
         raw_data = csv.reader(file)
         voltage_list = []
         current_list = []
@@ -79,7 +84,7 @@ class GUIHandler:
     # Function for opening the file explorer window
     def browseFiles(self):
         filedialog.askopenfilename(initialdir="~", title="Select a File",
-                                          filetypes=(("CSV files", "*.csv"), ("All files", "*.*")))
+                                   filetypes=(("CSV files", "*.csv"), ("All files", "*.*")))
         # label_file_explorer.configure(text="File opened: "+filename)
 
 
