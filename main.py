@@ -16,6 +16,7 @@ class GUIHandler:
         menu_bar = tkinter.Menu(root)
         file_menu = tkinter.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="Import", command=self.browseFiles)
+        file_menu.add_command(label="Export", command=self.save) ##need to add implementation first
         menu_bar.add_cascade(label="File", menu=file_menu)
 
         data_file = None  # open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
@@ -55,7 +56,12 @@ class GUIHandler:
 
     # function to save currently plotted graph to a new csv file
     def save(self):
-        pass
+        # gives user a choice between saving as .csv file or .txt file
+        file = filedialog.asksaveasfile(defaultextension='.csv',
+                                        filetypes=[("CSV file (.csv)", ".csv"), ("Text file (.txt)", ".txt")])
+        file.close()
+
+        #pass
         # plt.savefig('new_graph.png') #placeholder: user should be able to name their own file (input)
         # pop = Tk()
 
