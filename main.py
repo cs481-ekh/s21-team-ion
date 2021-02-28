@@ -31,7 +31,6 @@ class GUIHandler:
 
         file_menu = tkinter.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="Import", command=self.browseFiles)
-<<<<<<< HEAD
         file_menu.add_command(label="Exit", command=self.root.quit)
 
         menu_bar.add_cascade(label="File", menu=file_menu)
@@ -40,18 +39,9 @@ class GUIHandler:
         # v_raw, c_raw = self.read_csv(data_file)
 
         # data_store = storedData.StoredData(v_raw, c_raw)
-=======
-        file_menu.add_command(label="Export", command=self.save) ##need to add implementation first
+        file_menu.add_command(label="Export", command=self.save)  # need to add implementation first
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        data_file = None  # open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
-        if data_file != None:
-            v_raw, c_raw = self.read_csv(data_file)
-
-            data_store = storedData.StoredData(v_raw, c_raw)
-        else:
-            data_store = None
->>>>>>> 9a99525e351a4dcd95f4192214b65c237715fff2
         # dataStore.set_regression_bounds()
 
         # create figure inside tkinter window and create axes that all plots can use
@@ -103,19 +93,6 @@ class GUIHandler:
 
     def read_csv(self):
         """test function docstring please ignore"""
-<<<<<<< HEAD
-        self.root.after(100, self.read_csv)
-        if not self.browse_was_called:
-            return
-
-        self.csv_was_called = True
-
-        file_str = self.cb.get_file()
-        file = open(file_str, 'r', newline='', encoding='utf-8-sig')
-=======
-        if file == None:
-            return
->>>>>>> 9a99525e351a4dcd95f4192214b65c237715fff2
         raw_data = csv.reader(file)
         self.voltage_list = []
         self.current_list = []
@@ -128,7 +105,6 @@ class GUIHandler:
 
     # Function for opening the file explorer window
     def browseFiles(self):
-<<<<<<< HEAD
         self.cb.browse_files()
         self.browse_was_called = True
 
@@ -141,12 +117,6 @@ class GUIHandler:
         self.plot = PlotGUI(self.data_store)
         self.plot.plot_data(fig, canvas)
         self.csv_was_called = False
-=======
-        filedialog.askopenfilename(initialdir="~", title="Select a File",
-                                   filetypes=(("CSV files", "*.csv"), ("All files", "*.*")))
-        # label_file_explorer.configure(text="File opened: "+filename)
->>>>>>> 9a99525e351a4dcd95f4192214b65c237715fff2
-
 
 def do_nothing():
     x = 0

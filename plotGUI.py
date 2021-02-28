@@ -23,21 +23,13 @@ class PlotGUI:
         ax = fig.add_subplot(111)
 
         # get the raw data in a form that is easy to plot
-        if self.stored_data != None:
-            raw_data_plot = self.__raw_data_plot()
+        raw_data_plot = self.__raw_data_plot()
 
-            # get the upper and lower regression boundary lines (vertical lines on either side of the graph)
-            regression_bounds = self.__regression_bounds_plots()
+        # get the upper and lower regression boundary lines (vertical lines on either side of the graph)
+        regression_bounds = self.__regression_bounds_plots()
 
-            # get the simple linear regression for plotting
-            regression_plot = self.__regression_plot()
-        else:
-            raw_data_plot = {}
-            regression_bounds = {}
-            regression_plot = {}
-            raw_data_plot["x"] = raw_data_plot["y"] = regression_bounds["upper"]\
-                = regression_bounds["lower"] = regression_bounds["y"] =\
-                regression_plot["x"] = regression_plot["y"] = 0
+        # get the simple linear regression for plotting
+        regression_plot = self.__regression_plot()
 
         # plot raw data, regression boundaries, and regression
         ax.plot(raw_data_plot["x"], raw_data_plot["y"])
@@ -93,4 +85,4 @@ class PlotGUI:
         """
         linregression = self.stored_data.compute_linear_regression()
         return {"x": self.stored_data.voltages, "y": linregression.intercept + linregression.slope *
-                self.stored_data.voltages}
+                                                     self.stored_data.voltages}
