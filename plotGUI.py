@@ -23,7 +23,7 @@ class PlotGUI:
         ax = fig.add_subplot(111)
 
         # get the raw data in a form that is easy to plot
-        if self.stored_data != None:
+        if self.stored_data is not None:
             raw_data_plot = self.__raw_data_plot()
 
             # get the upper and lower regression boundary lines (vertical lines on either side of the graph)
