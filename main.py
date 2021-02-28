@@ -93,6 +93,12 @@ class GUIHandler:
 
     def read_csv(self):
         """test function docstring please ignore"""
+        self.root.after(100, self.read_csv)
+        if not self.browse_was_called:
+            return
+
+        file_str = self.cb.get_file()
+        file = open(file_str, 'r', newline='', encoding='utf-8-sig')
         raw_data = csv.reader(file)
         self.voltage_list = []
         self.current_list = []
@@ -101,6 +107,7 @@ class GUIHandler:
             self.current_list.append(float(row[1]) / 1000.0)
 
         self.browse_was_called = False
+        self.csv_was_called = True
         file.close()
 
     # Function for opening the file explorer window
