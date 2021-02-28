@@ -33,8 +33,6 @@ class GUIHandler:
         file_menu.add_command(label="Import", command=self.browseFiles)
         file_menu.add_command(label="Exit", command=self.root.quit)
 
-        menu_bar.add_cascade(label="File", menu=file_menu)
-
         # data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
         # v_raw, c_raw = self.read_csv(data_file)
 
