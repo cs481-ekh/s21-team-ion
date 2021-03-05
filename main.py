@@ -1,6 +1,7 @@
 """test docstring please ignore"""
 import csv
 import tkinter
+from tkinter import messagebox
 from storedData import StoredData
 from plotGUI import PlotGUI
 from matplotlib.backends.backend_tkagg import (
@@ -63,7 +64,6 @@ class GUIHandler:
         toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        self.root.after(0, self.read_csv)
         self.root.after(0, self.update_graph, fig, canvas)
 
         self.root.config(menu=menu_bar)
@@ -107,20 +107,12 @@ class GUIHandler:
 
         TODO: make sure the the file is a valid csv file
         """
-        self.root.after(100, self.read_csv)
-        if not self.browse_was_called:
-            return
-
         file_str = self.cb.get_file()
         file_path = Path(file_str)
         if file_path.is_file():
             file = open(file_str, 'r', newline='', encoding='utf-8-sig')
             raw_data = csv.reader(file)
-            self.voltage_list = []
-            self.current_list = []
-            for row in raw_data:
-                self.voltage_list.append(float(row[0]))
-                self.current_list.append(float(row[1]) / 1000.0)
+            self.__store_data_from_csv(raw_data)
             file.close()
 
         self.browse_was_called = False
@@ -129,6 +121,7 @@ class GUIHandler:
     # Function for opening the file explorer window
     def browse_files(self):
         self.cb.browse_files()
+        self.read_csv()
         self.browse_was_called = True
 
     def update_graph(self, fig, canvas):
@@ -141,9 +134,39 @@ class GUIHandler:
         self.plot.plot_data(fig, canvas)
         self.csv_was_called = False
 
+    def __store_data_from_csv(self, data):
+        self.voltage_list = []
+        self.current_list = []
+        current_row = 1
+        valid_file = True
+        msg = None
+        label = None
+        for row in data:
+            if len(row) < 2:
+                valid_file = False
+                label = "Data missing in CSV"
+                msg = "Missing data on row {}".format(current_row)
+                break
 
-def do_nothing():
-    x = 0
+            try:
+                float(row[0])
+                float(row[1])
+            except ValueError:
+                valid_file = False
+                label = "Invalid data"
+                msg = "Data in row {} does not appear to be a floating point number".format(current_row)
+                break
+
+            self.voltage_list.append(float(row[0]))
+            self.current_list.append(float(row[1]) / 1000.0)
+            current_row = current_row + 1
+
+        if not valid_file:
+            self.voltage_list = []
+            self.current_list = []
+
+            messagebox.showerror(label, msg)
+            self.root.update()
 
 
 if __name__ == "__main__":
