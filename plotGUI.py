@@ -20,7 +20,8 @@ class PlotGUI:
 
     # @ staticmethod
     def plot_data(self, fig, canvas):
-        ax = fig.add_subplot(111)
+        fig.clear()
+        ax = fig.subplots()
 
         # get the raw data in a form that is easy to plot
         if self.stored_data is not None:
