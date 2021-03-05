@@ -1,14 +1,5 @@
-import tkinter
-from matplotlib.backends.backend_tkagg import (
-    FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.backend_bases import key_press_handler
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 import numpy as np
-import os
-import matplotlib as mpl
-
-
 # from xvfbwrapper import Xvfb
 
 
@@ -20,6 +11,7 @@ class PlotGUI:
 
     # @ staticmethod
     def plot_data(self, fig, canvas):
+        # if this method is called, we're redrawing the graph.  Clear it first
         fig.clear()
         ax = fig.subplots()
 
