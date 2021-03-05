@@ -31,13 +31,13 @@ class GUIHandler:
 
         file_menu = tkinter.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="Import", command=self.browseFiles)
+        file_menu.add_command(label="Export", command=self.save)  # need to add implementation first
         file_menu.add_command(label="Exit", command=self.root.quit)
 
         # data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
         # v_raw, c_raw = self.read_csv(data_file)
 
         # data_store = storedData.StoredData(v_raw, c_raw)
-        file_menu.add_command(label="Export", command=self.save)  # need to add implementation first
         menu_bar.add_cascade(label="File", menu=file_menu)
 
         # dataStore.set_regression_bounds()
@@ -64,6 +64,8 @@ class GUIHandler:
         self.root.after(0, self.update_graph, fig, canvas)
 
         self.root.config(menu=menu_bar)
+        self.plot = PlotGUI(self.data_store)
+        self.plot.plot_data(fig, canvas)
         self.root.mainloop()
 
         # data_file.close()
@@ -75,7 +77,7 @@ class GUIHandler:
                                         filetypes=[("CSV file (.csv)", ".csv"), ("Text file (.txt)", ".txt")])
         file.close()
 
-        #pass
+        # pass
         # plt.savefig('new_graph.png') #placeholder: user should be able to name their own file (input)
         # pop = Tk()
 
@@ -122,6 +124,7 @@ class GUIHandler:
         self.plot = PlotGUI(self.data_store)
         self.plot.plot_data(fig, canvas)
         self.csv_was_called = False
+
 
 def do_nothing():
     x = 0
