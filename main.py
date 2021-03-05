@@ -24,6 +24,8 @@ class GUIHandler:
         self.cb = Callbacks()
         self.browse_was_called = False
         self.csv_was_called = False
+        self.voltage_list = []
+        self.current_list = []
 
         self.root = tkinter.Tk()
         self.root.wm_title("Embedding in Tk")
@@ -64,7 +66,11 @@ class GUIHandler:
         self.root.after(0, self.update_graph, fig, canvas)
 
         self.root.config(menu=menu_bar)
-        self.plot = PlotGUI(self.data_store)
+
+        # generate empty plot, but keep bool to save on CPU usage
+        self.csv_was_called = True
+        self.update_graph(fig, canvas)
+
         self.plot.plot_data(fig, canvas)
         self.root.mainloop()
 

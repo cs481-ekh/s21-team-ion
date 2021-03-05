@@ -10,11 +10,18 @@ class StoredData:
     vertical_regression_line_points = None  # 1d np array
 
     def __init__(self, v_raw, c_raw):
-        self.voltages = np.array(v_raw)
-        self.currents = np.array(c_raw)
-        self.regression_min = np.min(self.voltages)
-        self.regression_max = np.max(self.voltages)
-        self.compute_regression_boundary_lines()
+        if len(v_raw) == 0:
+            self.voltages = np.array([0, 1])
+            self.currents = np.array([0, 1])
+            self.regression_min = 0
+            self.regression_max = 0
+            self.compute_regression_boundary_lines()
+        else:
+            self.voltages = np.array(v_raw)
+            self.currents = np.array(c_raw)
+            self.regression_min = np.min(self.voltages)
+            self.regression_max = np.max(self.voltages)
+            self.compute_regression_boundary_lines()
 
     def compute_regression_boundary_lines(self):
         current_min = np.min(self.currents)
@@ -24,11 +31,14 @@ class StoredData:
             delta = np.abs(self.currents[i + 1] - self.currents[i])
             delta_list.append(delta)
         average_current_delta = np.average(delta_list)
-        self.vertical_regression_line_points = np.arange(start=current_min,
-                                                         stop=current_max,
-                                                         step=average_current_delta)
+        if current_min == current_max == 0.0:
+            self.vertical_regression_line_points = np.zeros(2)
+        else:
+            self.vertical_regression_line_points = np.arange(start=current_min,
+                                                             stop=current_max,
+                                                             step=average_current_delta)
 
-        self.compute_linear_regression()
+            self.compute_linear_regression()
 
     def compute_linear_regression(self):
         return stats.linregress(self.voltages, self.currents)

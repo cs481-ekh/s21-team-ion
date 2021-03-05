@@ -34,10 +34,7 @@ class PlotGUI:
         else:
             raw_data_plot = {}
             regression_bounds = {}
-            regression_plot = {}
-            raw_data_plot["x"] = raw_data_plot["y"] = regression_bounds["upper"]\
-                = regression_bounds["lower"] = regression_bounds["y"] =\
-                regression_plot["x"] = regression_plot["y"] = 0
+            regression_plot = {"x": 0, "y": 0}
 
         # plot raw data, regression boundaries, and regression
         ax.plot(raw_data_plot["x"], raw_data_plot["y"])
