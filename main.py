@@ -8,6 +8,7 @@ from matplotlib.backends.backend_tkagg import (
 from matplotlib.figure import Figure
 from tkinter import filedialog
 from utils import Callbacks
+from pathlib import Path
 
 
 class GUIHandler:
@@ -32,7 +33,7 @@ class GUIHandler:
         menu_bar = tkinter.Menu(self.root)
 
         file_menu = tkinter.Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Import", command=self.browseFiles)
+        file_menu.add_command(label="Import", command=self.browse_files)
         file_menu.add_command(label="Export", command=self.save)  # need to add implementation first
         file_menu.add_command(label="Exit", command=self.root.quit)
 
@@ -104,20 +105,22 @@ class GUIHandler:
             return
 
         file_str = self.cb.get_file()
-        file = open(file_str, 'r', newline='', encoding='utf-8-sig')
-        raw_data = csv.reader(file)
-        self.voltage_list = []
-        self.current_list = []
-        for row in raw_data:
-            self.voltage_list.append(float(row[0]))
-            self.current_list.append(float(row[1]) / 1000.0)
+        file_path = Path(file_str)
+        if file_path.is_file():
+            file = open(file_str, 'r', newline='', encoding='utf-8-sig')
+            raw_data = csv.reader(file)
+            self.voltage_list = []
+            self.current_list = []
+            for row in raw_data:
+                self.voltage_list.append(float(row[0]))
+                self.current_list.append(float(row[1]) / 1000.0)
+            file.close()
 
         self.browse_was_called = False
         self.csv_was_called = True
-        file.close()
 
     # Function for opening the file explorer window
-    def browseFiles(self):
+    def browse_files(self):
         self.cb.browse_files()
         self.browse_was_called = True
 
