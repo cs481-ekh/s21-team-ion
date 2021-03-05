@@ -11,7 +11,14 @@ class PlotGUI:
 
     # @ staticmethod
     def plot_data(self, fig, canvas):
-        # if this method is called, we're redrawing the graph.  Clear it first
+        """
+        Updates the graph with the most recent data to plot.  Will plot the raw data (from the selected csv file),
+        the linear regression of that data, and the min/max boundaries of the linear regression (which the user
+        will be able to modify)
+
+        :param fig: the matplotlib Figure being updated
+        :param canvas: the tkinter Canvas that contains the matplotlib Figure
+        """
         fig.clear()
         ax = fig.subplots()
 
