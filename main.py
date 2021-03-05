@@ -99,7 +99,14 @@ class GUIHandler:
         # plot_canvas.get_tk_widget().pack(side=TOP, fill=Y)
 
     def read_csv(self):
-        """test function docstring please ignore"""
+        """
+        Reads a .csv file that the user selected in browse_files().
+        Checks if browse_files() was called (since this function is polled)
+        Then, checks if the file exists.
+        If the file exists, it reads in the data and stores it in memory in an instance of a StoredData class
+
+        TODO: make sure the the file is a valid csv file
+        """
         self.root.after(100, self.read_csv)
         if not self.browse_was_called:
             return
