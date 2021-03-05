@@ -24,18 +24,13 @@ class PlotGUI:
         ax = fig.subplots()
 
         # get the raw data in a form that is easy to plot
-        if self.stored_data is not None:
-            raw_data_plot = self.__raw_data_plot()
+        raw_data_plot = self.__raw_data_plot()
 
-            # get the upper and lower regression boundary lines (vertical lines on either side of the graph)
-            regression_bounds = self.__regression_bounds_plots()
+        # get the upper and lower regression boundary lines (vertical lines on either side of the graph)
+        regression_bounds = self.__regression_bounds_plots()
 
-            # get the simple linear regression for plotting
-            regression_plot = self.__regression_plot()
-        else:
-            raw_data_plot = {}
-            regression_bounds = {}
-            regression_plot = {"x": 0, "y": 0}
+        # get the simple linear regression for plotting
+        regression_plot = self.__regression_plot()
 
         # plot raw data, regression boundaries, and regression
         ax.plot(raw_data_plot["x"], raw_data_plot["y"])
