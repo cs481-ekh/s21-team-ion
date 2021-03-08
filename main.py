@@ -38,13 +38,7 @@ class GUIHandler:
         file_menu.add_command(label="Export", command=self.save)  # need to add implementation first
         file_menu.add_command(label="Exit", command=self.root.quit)
 
-        # data_file = open('rawData/Book2-1.csv', 'r', newline='', encoding='utf-8-sig')
-        # v_raw, c_raw = self.read_csv(data_file)
-
-        # data_store = storedData.StoredData(v_raw, c_raw)
         menu_bar.add_cascade(label="File", menu=file_menu)
-
-        # dataStore.set_regression_bounds()
 
         # create figure inside tkinter window and create axes that all plots can use
         fig = Figure(figsize=(5, 4), dpi=100)
@@ -53,9 +47,6 @@ class GUIHandler:
         # pack_toolbar=False will make it easier to use a layout manager later on.
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
         toolbar.update()
-
-        # gui = plotGUI.PlotGUI(data_store)
-        # gui.plot_data(fig, canvas)
 
         # Packing order is important. Widgets are processed sequentially and if there
         # is no space left, because the window is too small, they are not displayed.
@@ -72,7 +63,7 @@ class GUIHandler:
         self.csv_was_called = True
         self.update_graph(fig, canvas)
 
-        self.plot.plot_data(fig, canvas)
+        self.plot.plot_data(fig, canvas, self.root)
         self.root.mainloop()
 
         # data_file.close()
@@ -131,7 +122,7 @@ class GUIHandler:
 
         self.data_store = StoredData(self.voltage_list, self.current_list)
         self.plot = PlotGUI(self.data_store)
-        self.plot.plot_data(fig, canvas)
+        self.plot.plot_data(fig, canvas, self.root)
         self.csv_was_called = False
 
     def __store_data_from_csv(self, data):

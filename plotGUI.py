@@ -10,7 +10,7 @@ class PlotGUI:
         self.stored_data = data
 
     # @ staticmethod
-    def plot_data(self, fig, canvas):
+    def plot_data(self, fig, canvas, tkroot):
         """
         Updates the graph with the most recent data to plot.  Will plot the raw data (from the selected csv file),
         the linear regression of that data, and the min/max boundaries of the linear regression (which the user
@@ -18,6 +18,7 @@ class PlotGUI:
 
         :param fig: the matplotlib Figure being updated
         :param canvas: the tkinter Canvas that contains the matplotlib Figure
+        :param tkroot: tk root class.  Only used for passing to event handlers
         """
         fig.clear()
         ax = fig.subplots()
@@ -42,6 +43,9 @@ class PlotGUI:
         canvas.mpl_connect(
             "key_press_event", lambda event: print(f"you pressed {event.key}"))
         canvas.mpl_connect("key_press_event", key_press_handler)
+
+        canvas.mpl_connect('button_press_event', self.__onclick)
+        canvas.mpl_connect('motion_notify_event', lambda event: self.__on_mouse_move(event, ax, tkroot))
 
     def __raw_data_plot(self):
         """Helper method that returns the raw x/y data stored as a dictionary.  Makes plotting the data in plot_data()
@@ -86,3 +90,23 @@ class PlotGUI:
         linregression = self.stored_data.compute_linear_regression()
         return {"x": self.stored_data.voltages, "y": linregression.intercept + linregression.slope *
                 self.stored_data.voltages}
+
+    def __onclick(self, event):
+        print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
+              ('double' if event.dblclick else 'single', event.button,
+               event.x, event.y, event.xdata, event.ydata))
+
+    def __on_mouse_move(self, event, ax, tkroot):
+        if self.stored_data.vertical_regression_line_points.any():
+            if event.xdata:
+                rgrmax_mouse_lower_bound = self.stored_data.regression_max - 5.0
+                rgrmax_mouse_upper_bound = self.stored_data.regression_max + 5.0
+                rgrmin_mouse_lower_bound = self.stored_data.regression_min - 5.0
+                rgrmin_mouse_upper_bound = self.stored_data.regression_min + 5.0
+                if rgrmax_mouse_lower_bound < event.xdata < rgrmax_mouse_upper_bound:
+                    tkroot.config(cursor='size_we')
+                elif rgrmin_mouse_lower_bound < event.xdata < rgrmin_mouse_upper_bound:
+                    tkroot.config(cursor='size_we')
+                else:
+                    tkroot.config(cursor='arrow')
+
