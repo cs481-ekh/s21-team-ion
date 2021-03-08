@@ -5,9 +5,19 @@ import numpy as np
 
 class PlotGUI:
     stored_data = None  # instance of StoredData class (storedData.py)
+    cursor_boundary_extent = None  # float
+    default_extent = 5.0
+    drag_extent = 10000.0
+    cursor_xdata = None  # float
+    cursor_ydata = None  # float
+    is_dragging = None  # bool
+    figure = None  # instance of mpl.Figure class
+    ax = None  # instead of mpl.Axes class
+    canvas = None
 
     def __init__(self, data):
         self.stored_data = data
+        self.cursor_boundary_extent = self.default_extent
 
     # @ staticmethod
     def plot_data(self, fig, canvas, tkroot):
@@ -21,7 +31,9 @@ class PlotGUI:
         :param tkroot: tk root class.  Only used for passing to event handlers
         """
         fig.clear()
-        ax = fig.subplots()
+        self.figure = fig
+        self.ax = fig.subplots()
+        self.canvas = canvas
 
         # get the raw data in a form that is easy to plot
         raw_data_plot = self.__raw_data_plot()
@@ -33,10 +45,10 @@ class PlotGUI:
         regression_plot = self.__regression_plot()
 
         # plot raw data, regression boundaries, and regression
-        ax.plot(raw_data_plot["x"], raw_data_plot["y"])
-        ax.plot(regression_bounds["lower"], regression_bounds["y"])
-        ax.plot(regression_bounds["upper"], regression_bounds["y"])
-        ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
+        self.ax.plot(raw_data_plot["x"], raw_data_plot["y"], label="raw data")
+        self.ax.plot(regression_bounds["lower"], regression_bounds["y"], label="regression lower bound")
+        self.ax.plot(regression_bounds["upper"], regression_bounds["y"], label="regression upper bound")
+        self.ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
 
         canvas.draw()
 
@@ -45,7 +57,8 @@ class PlotGUI:
         canvas.mpl_connect("key_press_event", key_press_handler)
 
         canvas.mpl_connect('button_press_event', self.__onclick)
-        canvas.mpl_connect('motion_notify_event', lambda event: self.__on_mouse_move(event, ax, tkroot))
+        canvas.mpl_connect('button_release_event', self.__onrelease)
+        canvas.mpl_connect('motion_notify_event', lambda event: self.__on_mouse_move(event, tkroot))
 
     def __raw_data_plot(self):
         """Helper method that returns the raw x/y data stored as a dictionary.  Makes plotting the data in plot_data()
@@ -92,21 +105,40 @@ class PlotGUI:
                 self.stored_data.voltages}
 
     def __onclick(self, event):
-        print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
-              ('double' if event.dblclick else 'single', event.button,
-               event.x, event.y, event.xdata, event.ydata))
+        self.is_dragging = True
 
-    def __on_mouse_move(self, event, ax, tkroot):
+    def __onrelease(self, event):
+        self.is_dragging = False
+        self.cursor_boundary_extent = self.default_extent
+
+    def __on_mouse_move(self, event, tkroot):
         if self.stored_data.vertical_regression_line_points.any():
             if event.xdata:
-                rgrmax_mouse_lower_bound = self.stored_data.regression_max - 5.0
-                rgrmax_mouse_upper_bound = self.stored_data.regression_max + 5.0
-                rgrmin_mouse_lower_bound = self.stored_data.regression_min - 5.0
-                rgrmin_mouse_upper_bound = self.stored_data.regression_min + 5.0
+                rgrmax_mouse_lower_bound = self.stored_data.regression_max - self.cursor_boundary_extent
+                rgrmax_mouse_upper_bound = self.stored_data.regression_max + self.cursor_boundary_extent
+                rgrmin_mouse_lower_bound = self.stored_data.regression_min - self.cursor_boundary_extent
+                rgrmin_mouse_upper_bound = self.stored_data.regression_min + self.cursor_boundary_extent
+
                 if rgrmax_mouse_lower_bound < event.xdata < rgrmax_mouse_upper_bound:
                     tkroot.config(cursor='size_we')
+                    if self.is_dragging:
+                        self.__replot_boundary_line("max", event.xdata)
+                        self.cursor_boundary_extent = self.drag_extent
                 elif rgrmin_mouse_lower_bound < event.xdata < rgrmin_mouse_upper_bound:
                     tkroot.config(cursor='size_we')
+                    if self.is_dragging:
+                        pass
                 else:
                     tkroot.config(cursor='arrow')
+
+    def __replot_boundary_line(self, line, new_loc):
+        if line == "max":
+            all_lines = self.ax.lines
+            for l in all_lines:
+                if l.get_label() == "regression upper bound":
+                    l.remove()
+                    regression_bounds = self.__regression_bounds_plots()
+                    self.ax.plot(regression_bounds["upper"], regression_bounds["y"], label="regression upper bound")
+                    self.stored_data.regression_max = new_loc
+                    self.canvas.draw()
 
