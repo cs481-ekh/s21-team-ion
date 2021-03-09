@@ -142,6 +142,14 @@ class PlotGUI:
                     tkroot.config(cursor='arrow')
 
     def __replot_boundary_line(self, line, new_loc):
+        """
+        Redraws the canvas with a new upper or lower boundary line (depending on which one is being modified
+        on this tick).  Separate function from plot_gui() so that plot_gui() is not recursively called, leading to
+        a stack overflow
+
+        :param line: which regression boundary line that is being modified ("min" or "max")
+        :param new_loc: the new x location of this boundary line (y-values are constant)
+        """
         if line == "max":
             if new_loc >= np.max(self.stored_data.voltages):
                 new_loc = np.max(self.stored_data.voltages)
