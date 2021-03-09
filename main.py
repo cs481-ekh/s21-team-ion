@@ -50,12 +50,12 @@ class GUIHandler:
 
         #bottom frame
         frame = tkinter.Frame(self.root)
-        e = tkinter.Entry(frame, width=10, borderwidth=2)
-        e.insert(0, 'left')
-        e.pack(side=tkinter.LEFT)
-        e2 = tkinter.Entry(frame, text='right', width=10, borderwidth=2)
-        e2.insert(0, 'right')
-        e2.pack(side=tkinter.LEFT)
+        leftEntry = tkinter.Entry(frame, width=10, borderwidth=2)
+        leftEntry.insert(0, 'left')
+        leftEntry.pack(side=tkinter.LEFT)
+        rightEntry = tkinter.Entry(frame, text='right', width=10, borderwidth=2)
+        rightEntry.insert(0, 'right')
+        rightEntry.pack(side=tkinter.LEFT)
         range_button = tkinter.Button(frame, text="Update Range")
         range_button.pack(side=tkinter.RIGHT)
         frame.pack(side=tkinter.BOTTOM)
