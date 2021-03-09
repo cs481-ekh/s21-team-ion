@@ -48,6 +48,19 @@ class GUIHandler:
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
         toolbar.update()
 
+        #bottom frame
+        frame = tkinter.Frame(self.root)
+        e = tkinter.Entry(frame, width=10, borderwidth=2)
+        e.insert(0, 'left')
+        e.pack(side=tkinter.LEFT)
+        e2 = tkinter.Entry(frame, text='right', width=10, borderwidth=2)
+        e2.insert(0, 'right')
+        e2.pack(side=tkinter.LEFT)
+        range_button = tkinter.Button(frame, text="Update Range")
+        range_button.pack(side=tkinter.RIGHT)
+        frame.pack(side=tkinter.BOTTOM)
+
+
         # Packing order is important. Widgets are processed sequentially and if there
         # is no space left, because the window is too small, they are not displayed.
         # The canvas is rather flexible in its size, so we pack it last which makes
