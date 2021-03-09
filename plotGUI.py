@@ -48,8 +48,10 @@ class PlotGUI:
 
         # plot raw data, regression boundaries, and regression
         self.ax.plot(raw_data_plot["x"], raw_data_plot["y"], label="raw data")
-        self.ax.plot(regression_bounds["lower"], regression_bounds["y"], label="regression lower bound")
-        self.ax.plot(regression_bounds["upper"], regression_bounds["y"], label="regression upper bound")
+        self.ax.plot(regression_bounds["lower"],
+                     regression_bounds["y"], label="regression lower bound")
+        self.ax.plot(regression_bounds["upper"],
+                     regression_bounds["y"], label="regression upper bound")
         self.ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
 
         canvas.draw()
@@ -124,14 +126,14 @@ class PlotGUI:
                 rgrmin_mouse_upper_bound = self.stored_data.regression_min + self.cursor_boundary_extent
 
                 if rgrmax_mouse_lower_bound < event.xdata < rgrmax_mouse_upper_bound:
-                    tkroot.config(cursor='size_we')
+                    tkroot.config(cursor='sb_h_double_arrow')
                     if self.is_dragging and not self.lower_dragging:
                         self.upper_dragging = True
                         self.__replot_boundary_line("max", event.xdata)
                         self.cursor_boundary_extent = self.drag_extent
 
                 if rgrmin_mouse_lower_bound < event.xdata < rgrmin_mouse_upper_bound:
-                    tkroot.config(cursor='size_we')
+                    tkroot.config(cursor='sb_h_double_arrow')
                     if self.is_dragging and not self.upper_dragging:
                         self.lower_dragging = True
                         self.__replot_boundary_line("min", event.xdata)
@@ -162,7 +164,8 @@ class PlotGUI:
                 if l.get_label() == "regression upper bound":
                     l.remove()
                     regression_bounds = self.__regression_bounds_plots()
-                    self.ax.plot(regression_bounds["upper"], regression_bounds["y"], label="regression upper bound")
+                    self.ax.plot(regression_bounds["upper"],
+                                 regression_bounds["y"], label="regression upper bound")
                     self.stored_data.regression_max = new_loc
                     self.canvas.draw()
         elif line == "min":
@@ -179,7 +182,7 @@ class PlotGUI:
                 if l.get_label() == "regression lower bound":
                     l.remove()
                     regression_bounds = self.__regression_bounds_plots()
-                    self.ax.plot(regression_bounds["lower"], regression_bounds["y"], label="regression lower bound")
+                    self.ax.plot(regression_bounds["lower"],
+                                 regression_bounds["y"], label="regression lower bound")
                     self.stored_data.regression_min = new_loc
                     self.canvas.draw()
-
