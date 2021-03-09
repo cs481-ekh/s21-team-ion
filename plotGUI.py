@@ -10,7 +10,9 @@ class PlotGUI:
     drag_extent = 10000.0
     cursor_xdata = None  # float
     cursor_ydata = None  # float
-    is_dragging = None  # bool
+    is_dragging = None
+    lower_dragging = None  # bool
+    upper_dragging = None  # bool
     figure = None  # instance of mpl.Figure class
     ax = None  # instead of mpl.Axes class
     canvas = None
@@ -109,6 +111,8 @@ class PlotGUI:
 
     def __onrelease(self, event):
         self.is_dragging = False
+        self.lower_dragging = False
+        self.upper_dragging = False
         self.cursor_boundary_extent = self.default_extent
 
     def __on_mouse_move(self, event, tkroot):
@@ -121,24 +125,53 @@ class PlotGUI:
 
                 if rgrmax_mouse_lower_bound < event.xdata < rgrmax_mouse_upper_bound:
                     tkroot.config(cursor='size_we')
-                    if self.is_dragging:
+                    if self.is_dragging and not self.lower_dragging:
+                        self.upper_dragging = True
                         self.__replot_boundary_line("max", event.xdata)
                         self.cursor_boundary_extent = self.drag_extent
-                elif rgrmin_mouse_lower_bound < event.xdata < rgrmin_mouse_upper_bound:
+
+                if rgrmin_mouse_lower_bound < event.xdata < rgrmin_mouse_upper_bound:
                     tkroot.config(cursor='size_we')
-                    if self.is_dragging:
-                        pass
-                else:
+                    if self.is_dragging and not self.upper_dragging:
+                        self.lower_dragging = True
+                        self.__replot_boundary_line("min", event.xdata)
+                        self.cursor_boundary_extent = self.drag_extent
+
+                if not rgrmax_mouse_lower_bound < event.xdata < rgrmax_mouse_upper_bound and \
+                   not rgrmin_mouse_lower_bound < event.xdata < rgrmin_mouse_upper_bound:
                     tkroot.config(cursor='arrow')
 
     def __replot_boundary_line(self, line, new_loc):
         if line == "max":
+            if new_loc >= np.max(self.stored_data.voltages):
+                new_loc = np.max(self.stored_data.voltages)
+            elif new_loc <= self.stored_data.regression_min:
+                new_loc = self.stored_data.regression_min + 1.0
+
             all_lines = self.ax.lines
             for l in all_lines:
+                # find the upper boundary line in the collections, remove it, add the new boundary line, and redraw the canvas
                 if l.get_label() == "regression upper bound":
                     l.remove()
                     regression_bounds = self.__regression_bounds_plots()
                     self.ax.plot(regression_bounds["upper"], regression_bounds["y"], label="regression upper bound")
                     self.stored_data.regression_max = new_loc
+                    self.canvas.draw()
+        elif line == "min":
+            # if the new lower boundary line is greater than the upper boundary line, stop that from happening
+            if new_loc >= self.stored_data.regression_max:
+                new_loc = self.stored_data.regression_max - 1.0
+            # if the new lower boundary line is less than the data, stop that from happening
+            elif new_loc < np.min(self.stored_data.voltages):
+                new_loc = np.min(self.stored_data.voltages)
+
+            all_lines = self.ax.lines
+            for l in all_lines:
+                # find the lower boundary line in the collections, remove it, add the new boundary line, and redraw the canvas
+                if l.get_label() == "regression lower bound":
+                    l.remove()
+                    regression_bounds = self.__regression_bounds_plots()
+                    self.ax.plot(regression_bounds["lower"], regression_bounds["y"], label="regression lower bound")
+                    self.stored_data.regression_min = new_loc
                     self.canvas.draw()
 
