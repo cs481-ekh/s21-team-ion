@@ -8,6 +8,8 @@ class StoredData:
     regression_min = None  # float
     regression_max = None  # float
     vertical_regression_line_points = None  # 1d np array
+    regr_calc_start = None  # int, array index
+    regr_calc_end = None  # int, array index
 
     def __init__(self, v_raw, c_raw):
         if len(v_raw) == 0:
@@ -41,4 +43,35 @@ class StoredData:
             self.compute_linear_regression()
 
     def compute_linear_regression(self):
+        tolerance = 0.02  # empirically derived from data in csv.  Each step in x is approx. 0.026
+
+        # find the index of the first instance of the minimum and maximum regression boundary lines on the x-axis
+        try:
+            self.regr_calc_start = next(i for i, _ in enumerate(self.voltages) if np.isclose(_, self.regression_min, tolerance))
+            self.regr_calc_end = next(i for i, _ in enumerate(self.voltages) if np.isclose(_, self.regression_max, tolerance))
+        except StopIteration:
+            pass
+        except IndexError:
+            self.regr_calc_start = None
+
+        lr_x = None
+        lr_y = None
+        if self.regr_calc_start is not None:
+            lr_x = self.voltages[self.regr_calc_start:self.regr_calc_end, ]
+            lr_y = self.currents[self.regr_calc_start:self.regr_calc_end, ]
+            if not lr_x.size == 0:
+                return stats.linregress(lr_x, lr_y)
+
         return stats.linregress(self.voltages, self.currents)
+
+    def __find_index(self, array, value, tolerance):
+        retVal = None
+        i = 0
+        for item in array:
+            if item - tolerance <= value <= item + tolerance:
+                retVal = i
+                break
+            i = i + 1
+
+        return retVal
+

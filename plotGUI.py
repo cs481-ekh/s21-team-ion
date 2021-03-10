@@ -167,7 +167,6 @@ class PlotGUI:
                     self.ax.plot(regression_bounds["upper"],
                                  regression_bounds["y"], label="regression upper bound")
                     self.stored_data.regression_max = new_loc
-                    self.canvas.draw()
         elif line == "min":
             # if the new lower boundary line is greater than the upper boundary line, stop that from happening
             if new_loc >= self.stored_data.regression_max:
@@ -185,4 +184,15 @@ class PlotGUI:
                     self.ax.plot(regression_bounds["lower"],
                                  regression_bounds["y"], label="regression lower bound")
                     self.stored_data.regression_min = new_loc
-                    self.canvas.draw()
+
+        all_lines = self.ax.lines
+        for l in all_lines:
+            # find the linear regression, remove it, and redraw it
+            if l.get_label() == "I_max":
+                l.remove()
+                regression = self.__regression_plot()
+                self.ax.plot(regression["x"], regression["y"], label='I_max')
+                self.canvas.draw()
+
+
+
