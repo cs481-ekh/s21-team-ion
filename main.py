@@ -57,7 +57,7 @@ class GUIHandler:
         self.rightEntry.insert(0, 'right')
         self.rightEntry.pack(side=tkinter.LEFT)
         range_button = tkinter.Button(frame, text="Update Range",
-                                      command=self.update_graph_from_textbox)
+                                      command=self.update_button_press)
         range_button.pack(side=tkinter.RIGHT)
         frame.pack(side=tkinter.BOTTOM)
 
@@ -137,19 +137,21 @@ class GUIHandler:
         self.plot = PlotGUI(self.data_store)
         self.plot.plot_data(fig, canvas, self.root)
 
-    def update_graph_from_textbox(self):
+        self.csv_was_called = False
+
+    def update_button_press(self):
         min_val = self.leftEntry.get()
         max_val = self.rightEntry.get()
 
         if min_val.isnumeric():
-            float(min_val)
-            self.plot.__replot_boundary_line("min", min_val)
+            min_val = float(min_val)
+            self.plot.update_from_textbox("min", min_val)
         elif min_val != "left" or min_val != None:
             self.leftEntry.put('Enter numeric value')
 
         if max_val.isnumeric():
-            float(max_val)
-            self.plot.__replot_boundary_line("max", max_val)
+            max_val = float(max_val)
+            self.plot.update_from_textbox("max", max_val)
         elif max_val != "right" or max_val != None:
             self.rightEntry.put('Enter numeric value')
 

@@ -64,6 +64,9 @@ class PlotGUI:
         canvas.mpl_connect('button_release_event', self.__onrelease)
         canvas.mpl_connect('motion_notify_event', lambda event: self.__on_mouse_move(event, tkroot))
 
+    def update_from_textbox(self, line, val):
+        self.__replot_boundary_line(line, val)
+
     def __raw_data_plot(self):
         """Helper method that returns the raw x/y data stored as a dictionary.  Makes plotting the data in plot_data()
         a single line of easy-to-read code.
@@ -193,6 +196,3 @@ class PlotGUI:
                 regression = self.__regression_plot()
                 self.ax.plot(regression["x"], regression["y"], label='I_max')
                 self.canvas.draw()
-
-
-
