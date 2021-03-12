@@ -141,17 +141,17 @@ class GUIHandler:
         min_val = self.leftEntry.get()
         max_val = self.rightEntry.get()
 
-        if min_val != "left" or min_val != None:
-            self.leftEntry.put('Enter numeric value')
-        elif min_val.isnumeric():
+        if min_val.isnumeric():
             float(min_val)
             self.plot.__replot_boundary_line("min", min_val)
+        elif min_val != "left" or min_val != None:
+            self.leftEntry.put('Enter numeric value')
 
-        if max_val != "right" or max_val != None:
-            self.rightEntry.put('Enter numeric value')
         if max_val.isnumeric():
             float(max_val)
             self.plot.__replot_boundary_line("max", max_val)
+        elif max_val != "right" or max_val != None:
+            self.rightEntry.put('Enter numeric value')
 
     def __store_data_from_csv(self, data):
         self.voltage_list = []
