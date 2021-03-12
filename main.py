@@ -51,10 +51,10 @@ class GUIHandler:
         # bottom frame
         frame = tkinter.Frame(self.root)
         self.leftEntry = tkinter.Entry(frame, width=10, borderwidth=2)
-        self.leftEntry.insert(0, 'left')
+        self.leftEntry.insert(0, 'min')
         self.leftEntry.pack(side=tkinter.LEFT)
         self.rightEntry = tkinter.Entry(frame, text='right', width=10, borderwidth=2)
-        self.rightEntry.insert(0, 'right')
+        self.rightEntry.insert(0, 'max')
         self.rightEntry.pack(side=tkinter.LEFT)
         range_button = tkinter.Button(frame, text="Update Range",
                                       command=self.update_button_press)
@@ -143,17 +143,17 @@ class GUIHandler:
         min_val = self.leftEntry.get()
         max_val = self.rightEntry.get()
 
-        if min_val.isnumeric():
+        try:
             min_val = float(min_val)
             self.plot.update_from_textbox("min", min_val)
-        elif min_val != "left" or min_val != None:
-            self.leftEntry.put('Enter numeric value')
+        except ValueError:
+            print("min input not a float")
 
-        if max_val.isnumeric():
+        try:
             max_val = float(max_val)
             self.plot.update_from_textbox("max", max_val)
-        elif max_val != "right" or max_val != None:
-            self.rightEntry.put('Enter numeric value')
+        except ValueError:
+            print("max input not a float")
 
     def __store_data_from_csv(self, data):
         self.voltage_list = []
