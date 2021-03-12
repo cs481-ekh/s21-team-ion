@@ -48,18 +48,18 @@ class GUIHandler:
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
         toolbar.update()
 
-        #bottom frame
+        # bottom frame
         frame = tkinter.Frame(self.root)
-        leftEntry = tkinter.Entry(frame, width=10, borderwidth=2)
-        leftEntry.insert(0, 'left')
-        leftEntry.pack(side=tkinter.LEFT)
-        rightEntry = tkinter.Entry(frame, text='right', width=10, borderwidth=2)
-        rightEntry.insert(0, 'right')
-        rightEntry.pack(side=tkinter.LEFT)
-        range_button = tkinter.Button(frame, text="Update Range")
+        self.leftEntry = tkinter.Entry(frame, width=10, borderwidth=2)
+        self.leftEntry.insert(0, 'left')
+        self.leftEntry.pack(side=tkinter.LEFT)
+        self.rightEntry = tkinter.Entry(frame, text='right', width=10, borderwidth=2)
+        self.rightEntry.insert(0, 'right')
+        self.rightEntry.pack(side=tkinter.LEFT)
+        range_button = tkinter.Button(frame, text="Update Range",
+                                      command=self.update_graph_from_textbox)
         range_button.pack(side=tkinter.RIGHT)
         frame.pack(side=tkinter.BOTTOM)
-
 
         # Packing order is important. Widgets are processed sequentially and if there
         # is no space left, because the window is too small, they are not displayed.
@@ -68,7 +68,7 @@ class GUIHandler:
         toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        self.root.after(0, self.update_graph, fig, canvas)
+        self.root.after(100, self.update_graph, fig, canvas)
 
         self.root.config(menu=menu_bar)
 
@@ -136,7 +136,22 @@ class GUIHandler:
         self.data_store = StoredData(self.voltage_list, self.current_list)
         self.plot = PlotGUI(self.data_store)
         self.plot.plot_data(fig, canvas, self.root)
-        self.csv_was_called = False
+
+    def update_graph_from_textbox(self):
+        min_val = self.leftEntry.get()
+        max_val = self.rightEntry.get()
+
+        if min_val != "left" or min_val != None:
+            self.leftEntry.put('Enter numeric value')
+        elif min_val.isnumeric():
+            float(min_val)
+            self.plot.__replot_boundary_line("min", min_val)
+
+        if max_val != "right" or max_val != None:
+            self.rightEntry.put('Enter numeric value')
+        if max_val.isnumeric():
+            float(max_val)
+            self.plot.__replot_boundary_line("max", max_val)
 
     def __store_data_from_csv(self, data):
         self.voltage_list = []
@@ -158,7 +173,8 @@ class GUIHandler:
             except ValueError:
                 valid_file = False
                 label = "Invalid data"
-                msg = "Data in row {} does not appear to be a floating point number".format(current_row)
+                msg = "Data in row {} does not appear to be a floating point number".format(
+                    current_row)
                 break
 
             self.voltage_list.append(float(row[0]))
