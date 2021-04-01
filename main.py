@@ -22,6 +22,11 @@ class GUIHandler:
     data_store = None  # instance of StoredData class
     plot = None  # instance of PlotGUI class
 
+    #testing these as global and sending them to plotgui
+    # leftEntry = None
+    # rightEntry = None
+
+
     def __init__(self):
         self.cb = Callbacks()
         self.browse_was_called = False
@@ -134,7 +139,7 @@ class GUIHandler:
             return
 
         self.data_store = StoredData(self.voltage_list, self.current_list)
-        self.plot = PlotGUI(self.data_store)
+        self.plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
         self.plot.plot_data(fig, canvas, self.root)
 
         self.csv_was_called = False
