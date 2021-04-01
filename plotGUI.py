@@ -118,7 +118,7 @@ class PlotGUI:
             ["x"] the x-values of the linear regression on a cartesian plane
             ["y"] the y-values of the linear regression on a cartesian plane
         """
-        linregression = self.stored_data.compute_linear_regression()
+        linregression = self.stored_data.get_regression_data()
         return {"x": self.stored_data.voltages, "y": linregression.intercept + linregression.slope *
                 self.stored_data.voltages}
 
@@ -208,5 +208,3 @@ class PlotGUI:
                 self.ax.plot(regression["x"], regression["y"], label='I_max')
                 self.canvas.draw()
         self.update_textbox()
-        
-        
