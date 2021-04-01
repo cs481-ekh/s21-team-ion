@@ -1,6 +1,7 @@
 from matplotlib.backend_bases import key_press_handler
 import numpy as np
 # from xvfbwrapper import Xvfb
+import tkinter #this is for the tkinter.END variable
 
 
 class PlotGUI:
@@ -17,9 +18,19 @@ class PlotGUI:
     ax = None  # instead of mpl.Axes class
     canvas = None
 
-    def __init__(self, data):
+    def __init__(self, data, leftEntry, rightEntry):
         self.stored_data = data
         self.cursor_boundary_extent = self.default_extent
+        self.leftEntry = leftEntry
+        self.rightEntry = rightEntry
+
+    def update_textbox(self):
+        min_text = self.stored_data.regression_min
+        max_text = self.stored_data.regression_max
+        self.leftEntry.delete(0, tkinter.END)
+        self.rightEntry.delete(0, tkinter.END)
+        self.leftEntry.insert(0, min_text)
+        self.rightEntry.insert(0, max_text)
 
     # @ staticmethod
     def plot_data(self, fig, canvas, tkroot):
@@ -196,3 +207,6 @@ class PlotGUI:
                 regression = self.__regression_plot()
                 self.ax.plot(regression["x"], regression["y"], label='I_max')
                 self.canvas.draw()
+        self.update_textbox()
+        
+        
