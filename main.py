@@ -53,6 +53,12 @@ class GUIHandler:
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
         toolbar.update()
 
+        open_prob_figure = Figure(figsize=(5, 4), dpi=100)
+        open_prob_canvas = FigureCanvasTkAgg(open_prob_figure, master=self.root)
+
+        toolbar2 = NavigationToolbar2Tk(open_prob_canvas, self.root, pack_toolbar=False)
+        toolbar2.update()
+
         # bottom frame
         frame = tkinter.Frame(self.root)
         self.leftEntry = tkinter.Entry(frame, width=10, borderwidth=2)
@@ -71,17 +77,27 @@ class GUIHandler:
         # The canvas is rather flexible in its size, so we pack it last which makes
         # sure the UI controls are displayed as long as possible.
         toolbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+        canvas.get_tk_widget().pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
 
+        # toolbar2.pack(side=tkinter.BOTTOM, fill=tkinter.X)
+        open_prob_canvas.get_tk_widget().pack(side=tkinter.RIGHT, fill=tkinter.BOTH, expand=1)
+        
         self.root.after(100, self.update_graph, fig, canvas)
 
         self.root.config(menu=menu_bar)
 
         # generate empty plot, but keep bool to save on CPU usage
         self.csv_was_called = True
-        self.update_graph(fig, canvas)
 
+        # call update on open_prob first, to create the default graph first. 
+        self.update_graph(open_prob_figure, open_prob_canvas)
+        self.plot.plot_data(open_prob_figure, open_prob_canvas, self.root)
+
+        self.update_graph(fig, canvas)
         self.plot.plot_data(fig, canvas, self.root)
+        
+
+
         self.root.mainloop()
 
         # data_file.close()
