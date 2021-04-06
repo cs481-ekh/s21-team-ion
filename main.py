@@ -56,8 +56,8 @@ class GUIHandler:
         open_prob_figure = Figure(figsize=(5, 4), dpi=100)
         open_prob_canvas = FigureCanvasTkAgg(open_prob_figure, master=self.root)
 
-        toolbar2 = NavigationToolbar2Tk(open_prob_canvas, self.root, pack_toolbar=False)
-        toolbar2.update()
+        open_prob_toolbar = NavigationToolbar2Tk(open_prob_canvas, self.root, pack_toolbar=False)
+        open_prob_toolbar.update()
 
         # bottom frame
         frame = tkinter.Frame(self.root)
