@@ -21,11 +21,11 @@ class GUIHandler:
     current_list = None  # list
     data_store = None  # instance of StoredData class
     plot = None  # instance of PlotGUI class
+    open_prob_plot = None  # another instance of PlotGUI class
 
-    #testing these as global and sending them to plotgui
+    # testing these as global and sending them to plotgui
     # leftEntry = None
     # rightEntry = None
-
 
     def __init__(self):
         self.cb = Callbacks()
@@ -81,7 +81,7 @@ class GUIHandler:
 
         # toolbar2.pack(side=tkinter.BOTTOM, fill=tkinter.X)
         open_prob_canvas.get_tk_widget().pack(side=tkinter.RIGHT, fill=tkinter.BOTH, expand=1)
-        
+
         self.root.after(100, self.update_graph, fig, canvas)
 
         self.root.config(menu=menu_bar)
@@ -89,13 +89,13 @@ class GUIHandler:
         # generate empty plot, but keep bool to save on CPU usage
         self.csv_was_called = True
 
-        # call update on open_prob first, to create the default graph first. 
+        # call update on open_prob first, to create the default graph first.
         self.update_graph(open_prob_figure, open_prob_canvas)
-        self.plot.plot_data(open_prob_figure, open_prob_canvas, self.root)
+        self.open_prob_plot.plot_data(open_prob_figure, open_prob_canvas, self.root)
 
         self.update_graph(fig, canvas)
         self.plot.plot_data(fig, canvas, self.root)
-        
+
         self.root.mainloop()
 
         # data_file.close()
@@ -155,6 +155,10 @@ class GUIHandler:
         self.data_store = StoredData(self.voltage_list, self.current_list)
         self.plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
         self.plot.plot_data(fig, canvas, self.root)
+
+        # TODO these funcitons need to be populated with open probability data
+        self.open_prob_plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
+        self.open_prob_plot.plot_data(fig, canvas, self.root)
 
         self.csv_was_called = False
 
