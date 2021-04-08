@@ -10,6 +10,7 @@ from matplotlib.figure import Figure
 from tkinter import filedialog
 from utils import Callbacks
 from pathlib import Path
+from plot_op import PlotOp
 
 
 class GUIHandler:
@@ -89,12 +90,12 @@ class GUIHandler:
         # generate empty plot, but keep bool to save on CPU usage
         self.csv_was_called = True
 
-        # call update on open_prob first, to create the default graph first.
-        self.update_graph(open_prob_figure, open_prob_canvas)
-        self.open_prob_plot.plot_data(open_prob_figure, open_prob_canvas, self.root)
-
+        # must call update_graph() before update_op_graph()
         self.update_graph(fig, canvas)
         self.plot.plot_data(fig, canvas, self.root)
+
+        self.update_op_graph(open_prob_figure, open_prob_canvas)
+        self.open_prob_plot.plot_data(open_prob_figure, open_prob_canvas, self.root)
 
         self.root.mainloop()
 
@@ -156,10 +157,14 @@ class GUIHandler:
         self.plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
         self.plot.plot_data(fig, canvas, self.root)
 
-        # TODO these funcitons need to be populated with open probability data
-        self.open_prob_plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
-        self.open_prob_plot.plot_data(fig, canvas, self.root)
+    def update_op_graph(self, fig, canvas):
+        self.root.after(100, self.update_graph, fig, canvas)
+        if not self.csv_was_called:
+            return
 
+        # TODO these funcitons need to be populated with open probability data
+        self.open_prob_plot = PlotOp(self.data_store)
+        self.open_prob_plot.plot_data(fig, canvas, self.root)
         self.csv_was_called = False
 
     def update_button_press(self):
