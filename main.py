@@ -158,11 +158,10 @@ class GUIHandler:
         self.plot.plot_data(fig, canvas, self.root)
 
     def update_op_graph(self, fig, canvas):
-        self.root.after(100, self.update_graph, fig, canvas)
+        self.root.after(100, self.update_op_graph, fig, canvas)
         if not self.csv_was_called:
             return
 
-        # TODO these funcitons need to be populated with open probability data
         self.open_prob_plot = PlotOp(self.data_store)
         self.open_prob_plot.plot_data(fig, canvas, self.root)
         self.csv_was_called = False
