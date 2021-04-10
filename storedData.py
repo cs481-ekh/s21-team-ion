@@ -9,12 +9,11 @@ class StoredData:
     regression_max = None  # float
     vertical_regression_line_points = None  # 1d np array
     regr_calc_start = None  # int, array index
-<<<<<<< HEAD
-    regr_calc_end = None  # int, array indexgit 
-=======
+
+    # regr_calc_end = None  # int, array indexgit 
     regr_calc_end = None  # int, array index
     regression_plot_data = None
->>>>>>> 93072bcb0d3194ef15fb388105629f70d8cd8504
+
 
     def __init__(self, v_raw, c_raw):
         if len(v_raw) == 0:

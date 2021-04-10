@@ -89,8 +89,11 @@ class GUIHandler:
     # function to save currently plotted graph to a new csv file
     def save(self):
         # gives user a choice between saving as .csv file or .txt file
+        file_data = csv.writer
         file = filedialog.asksaveasfile(defaultextension='.csv',
                                         filetypes=[("CSV file (.csv)", ".csv"), ("Text file (.txt)", ".txt")])
+        
+        self.data_store.get_regression_data()
         file.close()
 
         # pass
