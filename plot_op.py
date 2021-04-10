@@ -40,7 +40,7 @@ class PlotOp:
         b = reg_data.intercept
 
         # use slope and intercept to get positive regression values
-        regression_vals = np.array([m*x+b for x in pos_volts])
+        regression_vals = np.array([(m*x+b) if x > 0 else 1 for x in pos_volts])
 
         open_probability = pos_currents/regression_vals
         print(open_probability)
