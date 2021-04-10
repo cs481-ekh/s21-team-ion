@@ -23,6 +23,8 @@ class GUIHandler:
     data_store = None  # instance of StoredData class
     plot = None  # instance of PlotGUI class
     open_prob_plot = None  # another instance of PlotGUI class
+    open_prob_figure = None
+    open_prob_canvas = None
 
     # testing these as global and sending them to plotgui
     # leftEntry = None
@@ -54,10 +56,10 @@ class GUIHandler:
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
         toolbar.update()
 
-        open_prob_figure = Figure(figsize=(5, 4), dpi=100)
-        open_prob_canvas = FigureCanvasTkAgg(open_prob_figure, master=self.root)
+        self.open_prob_figure = Figure(figsize=(5, 4), dpi=100)
+        self.open_prob_canvas = FigureCanvasTkAgg(self.open_prob_figure, master=self.root)
 
-        # open_prob_toolbar = NavigationToolbar2Tk(open_prob_canvas, self.root, pack_toolbar=False)
+        # open_prob_toolbar = NavigationToolbar2Tk(self.open_prob_canvas, self.root, pack_toolbar=False)
         # open_prob_toolbar.update()
 
         # bottom frame
@@ -81,7 +83,7 @@ class GUIHandler:
         canvas.get_tk_widget().pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
 
         # toolbar2.pack(side=tkinter.BOTTOM, fill=tkinter.X)
-        open_prob_canvas.get_tk_widget().pack(side=tkinter.RIGHT, fill=tkinter.BOTH, expand=1)
+        self.open_prob_canvas.get_tk_widget().pack(side=tkinter.RIGHT, fill=tkinter.BOTH, expand=1)
 
         self.root.after(100, self.update_graph, fig, canvas)
 
@@ -94,8 +96,8 @@ class GUIHandler:
         self.update_graph(fig, canvas)
         self.plot.plot_data(fig, canvas, self.root)
 
-        self.update_op_graph(open_prob_figure, open_prob_canvas)
-        self.open_prob_plot.plot_data(open_prob_figure, open_prob_canvas, self.root)
+        self.update_op_graph(self.open_prob_figure, self.open_prob_canvas)
+        self.open_prob_plot.plot_data(self.open_prob_figure, self.open_prob_canvas, self.root)
 
         self.root.mainloop()
 
@@ -181,6 +183,9 @@ class GUIHandler:
             self.plot.update_from_textbox("max", max_val)
         except ValueError:
             print("max input not a float")
+
+        self.update_op_graph(self.open_prob_figure, self.open_prob_canvas)
+        self.open_prob_plot.plot_data(self.open_prob_figure, self.open_prob_canvas, self.root)
 
     def __store_data_from_csv(self, data):
         self.voltage_list = []
