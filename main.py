@@ -6,10 +6,12 @@ from storedData import StoredData
 from plotGUI import PlotGUI
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
+import matplotlib as mpl
 from matplotlib.figure import Figure
 from tkinter import filedialog
 from utils import Callbacks
 from pathlib import Path
+from plot_op import PlotOp
 
 
 class GUIHandler:
@@ -22,6 +24,8 @@ class GUIHandler:
     data_store = None  # instance of StoredData class
     plot = None  # instance of PlotGUI class
     open_prob_plot = None  # another instance of PlotGUI class
+    open_prob_figure = None
+    open_prob_canvas = None
 
     # testing these as global and sending them to plotgui
     # leftEntry = None
@@ -49,14 +53,17 @@ class GUIHandler:
         fig = Figure(figsize=(5, 4), dpi=100)
         canvas = FigureCanvasTkAgg(fig, master=self.root)  # A tk.DrawingArea.
 
-        # pack_toolbar=False will make it easier to use a layout manager later on.
+        # create our own toolbar, then remove all the buttons from it
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
+        for item in toolbar.children:
+            if type(toolbar.children[item]) in (tkinter.Button, tkinter.Frame, tkinter.Checkbutton):
+                toolbar.children[item].pack_forget()
         toolbar.update()
 
-        open_prob_figure = Figure(figsize=(5, 4), dpi=100)
-        open_prob_canvas = FigureCanvasTkAgg(open_prob_figure, master=self.root)
+        self.open_prob_figure = Figure(figsize=(5, 4), dpi=100)
+        self.open_prob_canvas = FigureCanvasTkAgg(self.open_prob_figure, master=self.root)
 
-        # open_prob_toolbar = NavigationToolbar2Tk(open_prob_canvas, self.root, pack_toolbar=False)
+        # open_prob_toolbar = NavigationToolbar2Tk(self.open_prob_canvas, self.root, pack_toolbar=False)
         # open_prob_toolbar.update()
 
         # bottom frame
@@ -80,7 +87,7 @@ class GUIHandler:
         canvas.get_tk_widget().pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
 
         # toolbar2.pack(side=tkinter.BOTTOM, fill=tkinter.X)
-        open_prob_canvas.get_tk_widget().pack(side=tkinter.RIGHT, fill=tkinter.BOTH, expand=1)
+        self.open_prob_canvas.get_tk_widget().pack(side=tkinter.RIGHT, fill=tkinter.BOTH, expand=1)
 
         self.root.after(100, self.update_graph, fig, canvas)
 
@@ -89,12 +96,12 @@ class GUIHandler:
         # generate empty plot, but keep bool to save on CPU usage
         self.csv_was_called = True
 
-        # call update on open_prob first, to create the default graph first.
-        self.update_graph(open_prob_figure, open_prob_canvas)
-        self.open_prob_plot.plot_data(open_prob_figure, open_prob_canvas, self.root)
-
+        # must call update_graph() before update_op_graph()
         self.update_graph(fig, canvas)
         self.plot.plot_data(fig, canvas, self.root)
+
+        self.update_op_graph(self.open_prob_figure, self.open_prob_canvas)
+        self.open_prob_plot.plot_data(self.open_prob_figure, self.open_prob_canvas, self.root)
 
         self.root.mainloop()
 
@@ -156,10 +163,13 @@ class GUIHandler:
         self.plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
         self.plot.plot_data(fig, canvas, self.root)
 
-        # TODO these funcitons need to be populated with open probability data
-        self.open_prob_plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
-        self.open_prob_plot.plot_data(fig, canvas, self.root)
+    def update_op_graph(self, fig, canvas):
+        self.root.after(100, self.update_op_graph, fig, canvas)
+        if not self.csv_was_called:
+            return
 
+        self.open_prob_plot = PlotOp(self.data_store)
+        self.open_prob_plot.plot_data(fig, canvas, self.root)
         self.csv_was_called = False
 
     def update_button_press(self):
@@ -177,6 +187,9 @@ class GUIHandler:
             self.plot.update_from_textbox("max", max_val)
         except ValueError:
             print("max input not a float")
+
+        self.update_op_graph(self.open_prob_figure, self.open_prob_canvas)
+        self.open_prob_plot.plot_data(self.open_prob_figure, self.open_prob_canvas, self.root)
 
     def __store_data_from_csv(self, data):
         self.voltage_list = []
