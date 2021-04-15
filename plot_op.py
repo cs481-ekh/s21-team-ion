@@ -42,12 +42,15 @@ class PlotOp:
         # use slope and intercept to get positive regression values
         regression_vals = np.array([(m*x+b) if x > 0 else 1 for x in pos_volts])
 
-        open_probability = pos_currents/regression_vals
-        # print(open_probability)
+        open_probability = pos_currents
+
+        for index, curr in enumerate(pos_currents):
+            if curr <= regression_vals[index]:
+                open_probability[index] = curr/regression_vals[index]
+            else:
+                open_probability[index] = 1
 
         self.ax.plot(pos_volts, open_probability)
-        # print("first 10 pos_volts: ", pos_volts[:10])
-        # print("first 10 open_probability: ", open_probability[:10])
 
         canvas.draw()
 
