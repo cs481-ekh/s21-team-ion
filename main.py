@@ -6,6 +6,7 @@ from storedData import StoredData
 from plotGUI import PlotGUI
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
+import matplotlib as mpl
 from matplotlib.figure import Figure
 from tkinter import filedialog
 from utils import Callbacks
@@ -52,8 +53,11 @@ class GUIHandler:
         fig = Figure(figsize=(5, 4), dpi=100)
         canvas = FigureCanvasTkAgg(fig, master=self.root)  # A tk.DrawingArea.
 
-        # pack_toolbar=False will make it easier to use a layout manager later on.
+        # create our own toolbar, then remove all the buttons from it
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
+        for item in toolbar.children:
+            if type(toolbar.children[item]) in (tkinter.Button, tkinter.Frame, tkinter.Checkbutton):
+                toolbar.children[item].pack_forget()
         toolbar.update()
 
         self.open_prob_figure = Figure(figsize=(5, 4), dpi=100)

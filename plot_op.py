@@ -46,8 +46,8 @@ class PlotOp:
         # print(open_probability)
 
         self.ax.plot(pos_volts, open_probability)
-        print("first 10 pos_volts: ", pos_volts[:10])
-        print("first 10 open_probability: ", open_probability[:10])
+        # print("first 10 pos_volts: ", pos_volts[:10])
+        # print("first 10 open_probability: ", open_probability[:10])
 
         canvas.draw()
 
