@@ -39,7 +39,7 @@ class GUIHandler:
         self.current_list = []
 
         self.root = tkinter.Tk()
-        self.root.wm_title("Embedding in Tk")
+        self.root.wm_title("Open Probability of Ion Channels")
         menu_bar = tkinter.Menu(self.root)
 
         file_menu = tkinter.Menu(menu_bar, tearoff=0)

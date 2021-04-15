@@ -23,15 +23,18 @@ class PlotOp:
         fig.clear()
         self.figure = fig
         self.ax = fig.subplots()
+        self.ax.set_title("Open Probability")
+        self.ax.set_ylabel("Probability")
+        self.ax.set_xlabel("Voltage (mV)")
         self.canvas = canvas
 
         # get positive voltage and current values
         pos_volts = self.get_pos_volts()
         pos_currents = self.get_pos_currs()
         # ensure pos_volts and pos_currents are the same length
-        if(len(pos_currents) > len(pos_volts)):
+        if len(pos_currents) > len(pos_volts):
             pos_currents = pos_currents[:len(pos_volts)]
-        elif(len(pos_volts) > len(pos_currents)):
+        elif len(pos_volts) > len(pos_currents):
             pos_volts = pos_volts[:len(pos_currents)]
 
         # get regression data
@@ -49,6 +52,7 @@ class PlotOp:
         # print("first 10 pos_volts: ", pos_volts[:10])
         # print("first 10 open_probability: ", open_probability[:10])
 
+        self.figure.tight_layout()
         canvas.draw()
 
     def get_pos_volts(self):

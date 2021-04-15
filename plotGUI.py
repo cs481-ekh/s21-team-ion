@@ -47,6 +47,9 @@ class PlotGUI:
         self.figure = fig
         self.ax = fig.subplots()
         self.canvas = canvas
+        self.ax.set_title('Raw Data')
+        self.ax.set_ylabel('Current (nA)')
+        self.ax.set_xlabel('Voltage (mV)')
 
         # get the raw data in a form that is easy to plot
         raw_data_plot = self.__raw_data_plot()
@@ -65,6 +68,7 @@ class PlotGUI:
                      regression_bounds["y"], label="regression upper bound")
         self.ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
 
+        self.figure.tight_layout()
         canvas.draw()
 
         canvas.mpl_connect(
