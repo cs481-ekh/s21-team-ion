@@ -1,4 +1,5 @@
 from matplotlib.backend_bases import key_press_handler
+from matplotlib.lines import Line2D
 import numpy as np
 # from xvfbwrapper import Xvfb
 import tkinter #this is for the tkinter.END variable
@@ -17,6 +18,10 @@ class PlotGUI:
     figure = None  # instance of mpl.Figure class
     ax = None  # instead of mpl.Axes class
     canvas = None
+    lower_regression_boundary = None  # instance of Line2D class
+    upper_regression_boundary = None  # instance of Line2D class
+    linear_regression = None  # instance of Line2D class
+    raw_data = None  # instance of Line2D class
 
     def __init__(self, data, leftEntry, rightEntry):
         self.stored_data = data
@@ -47,6 +52,9 @@ class PlotGUI:
         self.figure = fig
         self.ax = fig.subplots()
         self.canvas = canvas
+        self.ax.set_title('Raw Data')
+        self.ax.set_ylabel('Current (nA)')
+        self.ax.set_xlabel('Voltage (mV)')
 
         # get the raw data in a form that is easy to plot
         raw_data_plot = self.__raw_data_plot()
@@ -58,13 +66,26 @@ class PlotGUI:
         regression_plot = self.__regression_plot()
 
         # plot raw data, regression boundaries, and regression
-        self.ax.plot(raw_data_plot["x"], raw_data_plot["y"], label="raw data")
-        self.ax.plot(regression_bounds["lower"],
-                     regression_bounds["y"], label="regression lower bound")
-        self.ax.plot(regression_bounds["upper"],
-                     regression_bounds["y"], label="regression upper bound")
-        self.ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
+        self.raw_data = Line2D(raw_data_plot["x"], raw_data_plot["y"])
+        self.raw_data.set_label("raw data")
+        self.ax.add_line(self.raw_data)
 
+        self.lower_regression_boundary = Line2D(regression_bounds["lower"], regression_bounds["y"], label="regression lower bound")
+        self.lower_regression_boundary.set_color("black")
+        self.ax.add_line(self.lower_regression_boundary)
+
+        self.upper_regression_boundary = Line2D(regression_bounds["upper"], regression_bounds["y"], label="regression lower bound")
+        self.upper_regression_boundary.set_color("gold")
+        self.ax.add_line(self.upper_regression_boundary)
+
+        self.linear_regression = Line2D(regression_plot["x"], regression_plot["y"], label="I_max")
+        self.linear_regression.set_color("red")
+        self.ax.add_line(self.linear_regression)
+        # self.ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
+        self.ax.set_xlim([-100.0, 100.0])
+        self.ax.set_ylim([-12.0, 5.0])
+
+        # self.figure.tight_layout()
         canvas.draw()
 
         canvas.mpl_connect(
@@ -172,15 +193,10 @@ class PlotGUI:
             elif new_loc <= self.stored_data.regression_min:
                 new_loc = self.stored_data.regression_min + 1.0
 
-            all_lines = self.ax.lines
-            for l in all_lines:
-                # find the upper boundary line in the collections, remove it, add the new boundary line, and redraw the canvas
-                if l.get_label() == "regression upper bound":
-                    l.remove()
-                    regression_bounds = self.__regression_bounds_plots()
-                    self.ax.plot(regression_bounds["upper"],
-                                 regression_bounds["y"], label="regression upper bound")
-                    self.stored_data.regression_max = new_loc
+            regression_bounds = self.__regression_bounds_plots()
+            self.upper_regression_boundary.set_data(regression_bounds["upper"], regression_bounds["y"])
+            self.stored_data.regression_max = new_loc
+
         elif line == "min":
             # if the new lower boundary line is greater than the upper boundary line, stop that from happening
             if new_loc >= self.stored_data.regression_max:
@@ -189,22 +205,11 @@ class PlotGUI:
             elif new_loc < np.min(self.stored_data.voltages):
                 new_loc = np.min(self.stored_data.voltages)
 
-            all_lines = self.ax.lines
-            for l in all_lines:
-                # find the lower boundary line in the collections, remove it, add the new boundary line, and redraw the canvas
-                if l.get_label() == "regression lower bound":
-                    l.remove()
-                    regression_bounds = self.__regression_bounds_plots()
-                    self.ax.plot(regression_bounds["lower"],
-                                 regression_bounds["y"], label="regression lower bound")
-                    self.stored_data.regression_min = new_loc
+            regression_bounds = self.__regression_bounds_plots()
+            self.lower_regression_boundary.set_data(regression_bounds["lower"], regression_bounds["y"])
+            self.stored_data.regression_min = new_loc
 
-        all_lines = self.ax.lines
-        for l in all_lines:
-            # find the linear regression, remove it, and redraw it
-            if l.get_label() == "I_max":
-                l.remove()
-                regression = self.__regression_plot()
-                self.ax.plot(regression["x"], regression["y"], label='I_max')
-                self.canvas.draw()
+        regression = self.__regression_plot()
+        self.linear_regression.set_data(regression["x"], regression["y"])
+        self.canvas.draw()
         self.update_textbox()
