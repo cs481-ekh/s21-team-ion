@@ -53,7 +53,7 @@ class GUIHandler:
         fig = Figure(figsize=(5, 4), dpi=100)
         canvas = FigureCanvasTkAgg(fig, master=self.root)  # A tk.DrawingArea.
 
-        # create our own toolbar, then remove all the buttons from it
+        # create our own toolbar, then remove all the buttons from it / gui objects from it
         toolbar = NavigationToolbar2Tk(canvas, self.root, pack_toolbar=False)
         for item in toolbar.children:
             if type(toolbar.children[item]) in (tkinter.Button, tkinter.Frame, tkinter.Checkbutton):
