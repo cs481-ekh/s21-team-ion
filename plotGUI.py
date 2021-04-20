@@ -224,7 +224,6 @@ class PlotGUI:
 
         curr_y_max = np.max(self.stored_data.currents)
         regr_y_max = np.max(self.stored_data.get_regression_data()["y"])
-        print(curr_y_max, regr_y_max)
         y_max = None
         if curr_y_max > regr_y_max:
             y_max = curr_y_max
