@@ -110,12 +110,18 @@ class GUIHandler:
     # function to save currently plotted graph to a new csv file
     def save(self):
         # gives user a choice between saving as .csv file or .txt file
-        file_data = csv.writer
-        file = filedialog.asksaveasfile(defaultextension='.csv',
-                                        filetypes=[("CSV file (.csv)", ".csv"), ("Text file (.txt)", ".txt")])
         
-        self.data_store.get_regression_data()
-        file.close()
+        file_name = filedialog.asksaveasfile(defaultextension='.csv',
+                                        filetypes=[("CSV file (.csv)", ".csv"), ("Text file (.txt)", ".txt")])
+        if file_name is not None:
+            file = open(file_name.name, 'w')
+           
+            regr_data = self.data_store.get_regression_data()
+            file_data = [regr_data['x'], regr_data['y']]
+            # file_writer = csv.writer(file, delimiter=',', quotechar=' ', quoting=csv.QUOTE_MINIMAL)
+            file_writer = csv.writer(file)
+            file_writer.writerow(file_data)
+            file.close()
 
         # pass
         # plt.savefig('new_graph.png') #placeholder: user should be able to name their own file (input)

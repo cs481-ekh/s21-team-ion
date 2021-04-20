@@ -38,7 +38,7 @@ class PlotOp:
             pos_volts = pos_volts[:len(pos_currents)]
 
         # get regression data
-        reg_data = self.stored_data.get_regression_data()
+        reg_data = self.stored_data.stats_regression
         m = reg_data.slope
         b = reg_data.intercept
 

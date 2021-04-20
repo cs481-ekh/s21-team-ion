@@ -11,9 +11,9 @@ class StoredData:
     regr_calc_start = None  # int, array index
 
     # regr_calc_end = None  # int, array indexgit 
-    regr_calc_end = None  # int, array index
+    regr_calc_end = None  # int, arragit y index
     regression_plot_data = None
-
+    stats_regression = None
 
     def __init__(self, v_raw, c_raw):
         if len(v_raw) == 0:
@@ -60,13 +60,18 @@ class StoredData:
 
         lr_x = None
         lr_y = None
+        regression = None
         if self.regr_calc_start is not None:
             lr_x = self.voltages[self.regr_calc_start:self.regr_calc_end, ]
             lr_y = self.currents[self.regr_calc_start:self.regr_calc_end, ]
             if not lr_x.size == 0:
-                self.regression_plot_data = stats.linregress(lr_x, lr_y)
+                regression = stats.linregress(lr_x, lr_y)
             else:
-                self.regression_plot_data = stats.linregress(self.voltages, self.currents)
+                regression = stats.linregress(self.voltages, self.currents)
+
+            self.regression_plot_data = {"x": self.voltages, "y": regression.intercept + regression.slope *
+                                                                  self.voltages}
+            self.stats_regression = regression
 
     def __find_index(self, array, value, tolerance):
         retVal = None
