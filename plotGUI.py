@@ -22,6 +22,7 @@ class PlotGUI:
     upper_regression_boundary = None  # instance of Line2D class
     linear_regression = None  # instance of Line2D class
     raw_data = None  # instance of Line2D class
+    highest_ymax_seen = 0  # int, sets the y axis graph boundary
 
     def __init__(self, data, leftEntry, rightEntry):
         self.stored_data = data
@@ -81,9 +82,8 @@ class PlotGUI:
         self.linear_regression = Line2D(regression_plot["x"], regression_plot["y"], label="I_max")
         self.linear_regression.set_color("red")
         self.ax.add_line(self.linear_regression)
-        # self.ax.plot(regression_plot["x"], regression_plot["y"], label='I_max')
-        self.ax.set_xlim([-100.0, 100.0])
-        self.ax.set_ylim([-12.0, 5.0])
+
+        self.recalc_axes()
 
         # self.figure.tight_layout()
         canvas.draw()
@@ -209,5 +209,35 @@ class PlotGUI:
 
         regression = self.__regression_plot()
         self.linear_regression.set_data(regression["x"], regression["y"])
+
+        self.recalc_axes()
         self.canvas.draw()
         self.update_textbox()
+
+    def recalc_axes(self):
+        x_min = np.min(self.stored_data.voltages) - 3
+        x_max = np.max(self.stored_data.voltages) + 3
+        y_min = np.min(self.stored_data.currents) - 1
+
+        curr_y_max = np.max(self.stored_data.currents)
+        regr_y_max = np.max(self.stored_data.get_regression_data()["y"])
+        print(curr_y_max, regr_y_max)
+        y_max = None
+        if curr_y_max > regr_y_max:
+            y_max = curr_y_max
+        else:
+            y_max = regr_y_max
+
+        if y_max > self.highest_ymax_seen:
+            self.highest_ymax_seen = y_max
+        else:
+            y_max = self.highest_ymax_seen
+
+        if y_max > self.highest_ymax_seen:
+            self.highest_ymax_seen = y_max
+        else:
+            y_max = self.highest_ymax_seen
+
+        y_max = y_max + 1
+        self.ax.set_xlim([x_min, x_max])
+        self.ax.set_ylim([y_min, y_max])
