@@ -17,7 +17,6 @@ from plot_op import PlotOp
 class GUIHandler:
     root = None  # instance of Tk class
     cb = None  # instance of Callback class
-    browse_was_called = None  # bool
     csv_was_called = None  # bool
     voltage_list = None  # list
     current_list = None  # list
@@ -33,7 +32,6 @@ class GUIHandler:
 
     def __init__(self):
         self.cb = Callbacks()
-        self.browse_was_called = False
         self.csv_was_called = False
         self.voltage_list = []
         self.current_list = []
@@ -159,14 +157,12 @@ class GUIHandler:
             self.__store_data_from_csv(raw_data)
             file.close()
 
-        self.browse_was_called = False
         self.csv_was_called = True
 
     # Function for opening the file explorer window
     def browse_files(self):
         self.cb.browse_files()
         self.read_csv()
-        self.browse_was_called = True
 
     def update_graph(self, fig, canvas):
         self.root.after(100, self.update_graph, fig, canvas)
@@ -178,7 +174,7 @@ class GUIHandler:
         self.plot.plot_data(fig, canvas, self.root)
 
     def update_op_graph(self, fig, canvas):
-        self.root.after(100, self.update_op_graph, fig, canvas)
+        self.root.after(201, self.update_op_graph, fig, canvas)
         if not self.csv_was_called:
             return
 

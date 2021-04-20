@@ -93,7 +93,7 @@ class PlotGUI:
         canvas.mpl_connect("key_press_event", key_press_handler)
 
         canvas.mpl_connect('button_press_event', self.__onclick)
-        canvas.mpl_connect('button_release_event', self.__onrelease)
+        canvas.mpl_connect('button_release_event', lambda event: self.__onrelease(event, tkroot))
         canvas.mpl_connect('motion_notify_event', lambda event: self.__on_mouse_move(event, tkroot))
 
     def update_from_textbox(self, line, val):
@@ -144,11 +144,12 @@ class PlotGUI:
     def __onclick(self, event):
         self.is_dragging = True
 
-    def __onrelease(self, event):
+    def __onrelease(self, event, tkroot):
         self.is_dragging = False
         self.lower_dragging = False
         self.upper_dragging = False
         self.cursor_boundary_extent = self.default_extent
+        tkroot.config(cursor='arrow')
 
     def __on_mouse_move(self, event, tkroot):
         if self.stored_data.vertical_regression_line_points.any():
@@ -191,9 +192,10 @@ class PlotGUI:
             elif new_loc <= self.stored_data.regression_min:
                 new_loc = self.stored_data.regression_min + 1.0
 
+            self.stored_data.regression_max = new_loc
             regression_bounds = self.__regression_bounds_plots()
             self.upper_regression_boundary.set_data(regression_bounds["upper"], regression_bounds["y"])
-            self.stored_data.regression_max = new_loc
+
 
         elif line == "min":
             # if the new lower boundary line is greater than the upper boundary line, stop that from happening
@@ -203,9 +205,10 @@ class PlotGUI:
             elif new_loc < np.min(self.stored_data.voltages):
                 new_loc = np.min(self.stored_data.voltages)
 
+            self.stored_data.regression_min = new_loc
             regression_bounds = self.__regression_bounds_plots()
             self.lower_regression_boundary.set_data(regression_bounds["lower"], regression_bounds["y"])
-            self.stored_data.regression_min = new_loc
+
 
         regression = self.__regression_plot()
         self.linear_regression.set_data(regression["x"], regression["y"])
