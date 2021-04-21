@@ -1,8 +1,6 @@
-from matplotlib.backend_bases import key_press_handler
 from matplotlib.lines import Line2D
 import numpy as np
-# from xvfbwrapper import Xvfb
-import tkinter #this is for the tkinter.END variable
+import tkinter  # this is for the tkinter.END variable
 
 
 class PlotGUI:
@@ -31,8 +29,8 @@ class PlotGUI:
         self.rightEntry = rightEntry
 
     def update_textbox(self):
-        min_text = self.stored_data.regression_min
-        max_text = self.stored_data.regression_max
+        min_text = round(self.stored_data.regression_min, 3)
+        max_text = round(self.stored_data.regression_max, 3)
         self.leftEntry.delete(0, tkinter.END)
         self.rightEntry.delete(0, tkinter.END)
         self.leftEntry.insert(0, min_text)
@@ -87,10 +85,6 @@ class PlotGUI:
 
         # self.figure.tight_layout()
         canvas.draw()
-
-        canvas.mpl_connect(
-            "key_press_event", lambda event: print(f"you pressed {event.key}"))
-        canvas.mpl_connect("key_press_event", key_press_handler)
 
         canvas.mpl_connect('button_press_event', self.__onclick)
         canvas.mpl_connect('button_release_event', lambda event: self.__onrelease(event, tkroot))
@@ -196,7 +190,6 @@ class PlotGUI:
             regression_bounds = self.__regression_bounds_plots()
             self.upper_regression_boundary.set_data(regression_bounds["upper"], regression_bounds["y"])
 
-
         elif line == "min":
             # if the new lower boundary line is greater than the upper boundary line, stop that from happening
             if new_loc >= self.stored_data.regression_max:
@@ -208,7 +201,6 @@ class PlotGUI:
             self.stored_data.regression_min = new_loc
             regression_bounds = self.__regression_bounds_plots()
             self.lower_regression_boundary.set_data(regression_bounds["lower"], regression_bounds["y"])
-
 
         regression = self.__regression_plot()
         self.linear_regression.set_data(regression["x"], regression["y"])

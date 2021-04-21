@@ -67,10 +67,10 @@ class GUIHandler:
         # bottom frame
         frame = tkinter.Frame(self.root)
         self.leftEntry = tkinter.Entry(frame, width=10, borderwidth=2)
-        self.leftEntry.insert(0, 'min')
+        self.leftEntry.insert(0, '')
         self.leftEntry.pack(side=tkinter.LEFT)
         self.rightEntry = tkinter.Entry(frame, text='right', width=10, borderwidth=2)
-        self.rightEntry.insert(0, 'max')
+        self.rightEntry.insert(0, '')
         self.rightEntry.pack(side=tkinter.LEFT)
         range_button = tkinter.Button(frame, text="Update Range",
                                       command=self.update_button_press)
@@ -171,6 +171,7 @@ class GUIHandler:
         self.data_store = StoredData(self.voltage_list, self.current_list)
         self.plot = PlotGUI(self.data_store, self.leftEntry, self.rightEntry)
         self.plot.plot_data(fig, canvas, self.root)
+        self.plot.update_textbox()
 
     def update_op_graph(self, fig, canvas):
         self.root.after(201, self.update_op_graph, fig, canvas)
