@@ -127,3 +127,12 @@ class StoredData:
         pos_volts = np.array([x for x in self.voltages if x >= 0])
         pos_curr = np.array([x for x in self.currents if x >= 0])
         return {"v": pos_volts, "i": pos_curr}
+
+    def get_op_for_saving(self):
+        self.get_open_probability()
+        self.__calc_open_probability()
+        op_data = np.copy(self.open_prob_vals["y"], subok=True)
+        while len(op_data) < len(self.regression_plot_data["x"]):
+            op_data = np.insert(op_data, 0, 1, axis=0)
+
+        return op_data
