@@ -115,29 +115,17 @@ class GUIHandler:
             file = open(file_name.name, 'w', newline='')
 
             regr_data = self.data_store.get_regression_data()
+
             # file_data = [regr_data['x'], regr_data['y']]
             x = regr_data['x']
             y = regr_data['y']
+            op_data = self.data_store.get_op_for_saving()
             file_writer = csv.writer(file, delimiter=',')
             #for w in regr_data['x']:
                 # file_writer = csv.writer(file, delimiter=',', quotechar=' ', quoting=csv.QUOTE_MINIMAL)
 
-            file_writer.writerows(zip(x,y))
+            file_writer.writerows(zip(x, y, op_data))
             file.close()
-
-        # pass
-        # plt.savefig('new_graph.png') #placeholder: user should be able to name their own file (input)
-        # pop = Tk()
-
-        # fig, ax = plt.subplots()
-        # ax.plot(np.arange(1,10,5), np.arange(1,10,5))
-
-        # plot_canvas = FigureCanvasTkAgg(fig, master=pop)
-        # plot_canvas.draw()
-
-        # toolbar = NavigationToolbar2Tk(plot_canvas, pop)
-        # toolbar.update()
-        # plot_canvas.get_tk_widget().pack(side=TOP, fill=Y)
 
     def read_csv(self):
         """
@@ -181,6 +169,8 @@ class GUIHandler:
         self.open_prob_plot = PlotOp(self.data_store)
         self.open_prob_plot.plot_data(fig, canvas, self.root)
         self.csv_was_called = False
+
+        self.data_store.get_op_for_saving()
 
     def update_button_press(self):
         min_val = self.leftEntry.get()
