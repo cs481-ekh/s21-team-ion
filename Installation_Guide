@@ -1,0 +1,32 @@
+This guide was made in lieu of an automated powershell script.  Changing execution policies for powershell scripts
+is relatively difficult, and opens up the machine to potentially malicious vulnerabilities.
+
+This assumes you already have Python installed on the system, and it is added as an environment variable to PATH.
+Simply run main.py as if you were attempting to use it normally, from cmd.exe or powershell:
+
+In the directory in which main.py is located:
+
+> python .\main.py
+
+If the libraries are missing for running this program are not installed, you may see an error of the form:
+
+Traceback (most recent call last):
+  File ".\main.py", line 5, in <module>
+    from storedData import StoredData
+  File "C:\Users\vorce\PycharmProjects\pythonProject\storedData.py", line 1, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+From here, you can use the Preferred Installer Program (pip) that comes bundled with Python:
+
+> pip install <module name>
+
+So, for the above error:
+
+> pip install numpy
+
+Continue attempting to run
+
+> python .\main.py
+
+And use pip to install any missing dependencies until the program runs without error.
