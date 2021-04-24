@@ -7,6 +7,7 @@ from plotGUI import PlotGUI
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from tkinter import filedialog
 from utils import Callbacks
@@ -38,14 +39,6 @@ class GUIHandler:
 
         self.root = tkinter.Tk()
         self.root.wm_title("Open Probability of Ion Channels")
-        menu_bar = tkinter.Menu(self.root)
-
-        file_menu = tkinter.Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Import", command=self.browse_files)
-        file_menu.add_command(label="Export", command=self.save)  # need to add implementation first
-        file_menu.add_command(label="Exit", command=self.root.quit)
-
-        menu_bar.add_cascade(label="File", menu=file_menu)
 
         # create figure inside tkinter window and create axes that all plots can use
         fig = Figure(figsize=(5, 4), dpi=100)
@@ -89,8 +82,6 @@ class GUIHandler:
 
         self.root.after(100, self.update_graph, fig, canvas)
 
-        self.root.config(menu=menu_bar)
-
         # generate empty plot, but keep bool to save on CPU usage
         self.csv_was_called = True
 
@@ -100,6 +91,16 @@ class GUIHandler:
 
         self.update_op_graph(self.open_prob_figure, self.open_prob_canvas)
         self.open_prob_plot.plot_data(self.open_prob_figure, self.open_prob_canvas, self.root)
+
+        menu_bar = tkinter.Menu(self.root)
+
+        file_menu = tkinter.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Import", command=self.browse_files)
+        file_menu.add_command(label="Export data", command=self.save)
+        file_menu.add_command(label="Exit", command=self.root.quit)
+
+        menu_bar.add_cascade(label="File", menu=file_menu)
+        self.root.config(menu=menu_bar)
 
         self.root.mainloop()
 
