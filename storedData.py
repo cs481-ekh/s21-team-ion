@@ -14,6 +14,7 @@ class StoredData:
     regr_calc_end = None  # int, arragit y index
     regression_plot_data = None
     stats_regression = None
+    open_prob_vals = None  # dict containing pos voltages for x and OP for y
 
     def __init__(self, v_raw, c_raw):
         if len(v_raw) == 0:
@@ -87,3 +88,42 @@ class StoredData:
     def get_regression_data(self):
         self.__compute_linear_regression()
         return self.regression_plot_data
+
+    def __calc_open_probability(self):
+        # get positive voltage and current values
+        pos_vals = self.__get_pos_vals()
+        pos_volts = pos_vals["v"]
+        pos_currents = pos_vals["i"]
+
+        # ensure pos_volts and pos_currents are the same length
+        if len(pos_currents) > len(pos_volts):
+            pos_currents = pos_currents[:len(pos_volts)]
+        elif len(pos_volts) > len(pos_currents):
+            pos_volts = pos_volts[:len(pos_currents)]
+
+        # get regression data
+        reg_data = self.stats_regression
+        m = reg_data.slope
+        b = reg_data.intercept
+
+        # use slope and intercept to get positive regression values
+        regression_vals = np.array([(m * x + b) if x > 0 else 1 for x in pos_volts])
+
+        open_probability = pos_currents
+
+        for index, curr in enumerate(pos_currents):
+            if curr <= regression_vals[index]:
+                open_probability[index] = curr / regression_vals[index]
+            else:
+                open_probability[index] = 1
+
+        self.open_prob_vals = {"x": pos_volts, "y": open_probability}
+
+    def get_open_probability(self):
+        self.__calc_open_probability()
+        return self.open_prob_vals
+
+    def __get_pos_vals(self):
+        pos_volts = np.array([x for x in self.voltages if x >= 0])
+        pos_curr = np.array([x for x in self.currents if x >= 0])
+        return {"v": pos_volts, "i": pos_curr}
